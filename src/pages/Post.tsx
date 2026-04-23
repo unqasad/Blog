@@ -8,6 +8,7 @@ import KeyTakeaways from "@/components/KeyTakeaways";
 import NextStepCta from "@/components/NextStepCta";
 import { CATEGORY_BY_SLUG } from "@/lib/categories";
 import { supabase } from "@/integrations/supabase/client";
+import { resolveImage } from "@/lib/image-map";
 import { Clock, User } from "lucide-react";
 
 type Post = {
@@ -134,7 +135,7 @@ const Post = () => {
 
         {post.featured_image && (
           <img
-            src={post.featured_image}
+            src={resolveImage(post.featured_image)}
             alt={post.title}
             width={1600}
             height={900}

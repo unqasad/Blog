@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight, Clock } from "lucide-react";
 import { CATEGORY_BY_SLUG } from "@/lib/categories";
+import { resolveImage } from "@/lib/image-map";
 
 export type PostCardData = {
   slug: string;
@@ -27,7 +28,7 @@ export const PostCard = ({ post, featured = false }: { post: PostCardData; featu
           aria-label={post.title}
         >
           <img
-            src={post.featured_image}
+            src={resolveImage(post.featured_image)}
             alt={post.title}
             loading="lazy"
             width={1600}
