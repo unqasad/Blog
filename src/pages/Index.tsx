@@ -27,8 +27,8 @@ const Index = () => {
   return (
     <SiteLayout>
       <Seo
-        title="Affiliate Compass — Practical Affiliate & CPA Marketing Guides"
-        description="No-hype guides on affiliate marketing, CPA offers, tracking, conversions, traffic quality, and compliance. Build sustainable online income, the honest way."
+        title="Affiliate Compass — Build a Stronger Online Income System"
+        description="A modern publication on monetization, traffic, content strategy, and performance systems for builders who want sustainable online results."
         canonicalPath="/"
         image={heroImage}
         jsonLd={{
@@ -36,7 +36,7 @@ const Index = () => {
           "@type": "WebSite",
           name: "Affiliate Compass",
           description:
-            "Practical, no-hype guides on affiliate and CPA marketing.",
+            "A modern publication on monetization, traffic, content strategy, and performance systems.",
         }}
       />
 
