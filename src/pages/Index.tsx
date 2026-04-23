@@ -27,8 +27,8 @@ const Index = () => {
   return (
     <SiteLayout>
       <Seo
-        title="Affiliate Compass — Practical Affiliate & CPA Marketing Guides"
-        description="No-hype guides on affiliate marketing, CPA offers, tracking, conversions, traffic quality, and compliance. Build sustainable online income, the honest way."
+        title="Affiliate Compass — Build a Stronger Online Income System"
+        description="A modern publication on monetization, traffic, content strategy, and performance systems for builders who want sustainable online results."
         canonicalPath="/"
         image={heroImage}
         jsonLd={{
@@ -36,47 +36,65 @@ const Index = () => {
           "@type": "WebSite",
           name: "Affiliate Compass",
           description:
-            "Practical, no-hype guides on affiliate and CPA marketing.",
+            "A modern publication on monetization, traffic, content strategy, and performance systems.",
         }}
       />
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-hero border-b border-border">
-        <div className="container py-16 md:py-24 grid gap-10 md:grid-cols-2 items-center">
-          <div className="animate-fade-up">
-            <p className="text-xs uppercase tracking-[0.18em] text-primary font-semibold">
-              Practical · No-hype · Evergreen
+        <div className="absolute inset-0 -z-10 opacity-[0.35] [background-image:radial-gradient(hsl(var(--primary)/0.08)_1px,transparent_1px)] [background-size:22px_22px]" />
+        <div className="container py-20 md:py-28 lg:py-32 grid gap-14 md:gap-16 lg:grid-cols-12 items-center">
+          <div className="animate-fade-up lg:col-span-7">
+            <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-primary font-semibold">
+              <span className="h-px w-8 bg-primary/60" />
+              A modern publication on online income
             </p>
-            <h1 className="mt-3 font-serif text-4xl md:text-5xl lg:text-6xl tracking-tight leading-[1.05]">
-              Affiliate marketing,<br />
-              <span className="text-primary">explained honestly.</span>
+            <h1 className="mt-5 font-serif text-[2.5rem] sm:text-5xl lg:text-[4.25rem] tracking-tight leading-[1.04] text-balance">
+              Build a stronger{" "}
+              <span className="text-primary">online income system</span>
             </h1>
-            <p className="mt-5 max-w-xl text-lg text-muted-foreground leading-relaxed">
-              A calm publication for beginners and struggling marketers. Pick better offers,
-              fix tracking, lift conversions, stay compliant — and build income that lasts.
+            <p className="mt-6 max-w-xl text-lg md:text-xl text-muted-foreground leading-relaxed text-pretty">
+              A modern publication on monetization, traffic, content strategy, and performance
+              systems for builders who want sustainable online results.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="mt-9 flex flex-wrap items-center gap-3">
               <Link
                 to="/category/start-here"
-                className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-soft hover:bg-primary-glow transition"
+                className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-soft hover:bg-primary-glow transition"
               >
                 Start Here <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 to="/category/offer-selection"
-                className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-2.5 text-sm font-medium hover:border-primary/40 transition"
+                className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-6 py-3 text-sm font-medium hover:border-primary/40 hover:text-primary transition"
               >
                 Browse Offer Guides
               </Link>
             </div>
+            <dl className="mt-12 grid grid-cols-3 gap-6 max-w-md border-t border-border pt-6">
+              <div>
+                <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Focus</dt>
+                <dd className="mt-1 font-serif text-base">Performance</dd>
+              </div>
+              <div>
+                <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Tone</dt>
+                <dd className="mt-1 font-serif text-base">No-hype</dd>
+              </div>
+              <div>
+                <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Cadence</dt>
+                <dd className="mt-1 font-serif text-base">Evergreen</dd>
+              </div>
+            </dl>
           </div>
-          <div className="relative">
+          <div className="relative lg:col-span-5">
+            <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-primary/10 via-transparent to-transparent blur-2xl" />
             <img
               src={heroImage}
-              alt="Editorial illustration of a marketing funnel and growth chart"
+              alt="Editorial illustration of an online income system: performance graph, content cards, and a conversion funnel"
               width={1600}
-              height={1024}
-              className="rounded-2xl shadow-card border border-border"
+              height={1280}
+              fetchPriority="high"
+              className="rounded-2xl shadow-card border border-border w-full h-auto"
             />
           </div>
         </div>

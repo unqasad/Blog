@@ -61,8 +61,10 @@ export type Database = {
           published: boolean
           published_at: string
           read_minutes: number
+          scheduled_for: string | null
           secondary_keywords: string[]
           slug: string
+          status: string
           title: string
           updated_at: string
         }
@@ -82,8 +84,10 @@ export type Database = {
           published?: boolean
           published_at?: string
           read_minutes?: number
+          scheduled_for?: string | null
           secondary_keywords?: string[]
           slug: string
+          status?: string
           title: string
           updated_at?: string
         }
@@ -103,8 +107,10 @@ export type Database = {
           published?: boolean
           published_at?: string
           read_minutes?: number
+          scheduled_for?: string | null
           secondary_keywords?: string[]
           slug?: string
+          status?: string
           title?: string
           updated_at?: string
         }
