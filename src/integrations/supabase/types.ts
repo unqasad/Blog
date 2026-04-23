@@ -14,16 +14,146 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      categories: {
+        Row: {
+          color: string
+          created_at: string
+          description: string
+          id: string
+          name: string
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          description: string
+          id?: string
+          name: string
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          description?: string
+          id?: string
+          name?: string
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      posts: {
+        Row: {
+          author: string
+          category_slug: string
+          content: string
+          created_at: string
+          excerpt: string
+          faq: Json
+          featured_image: string | null
+          id: string
+          key_takeaways: string[]
+          meta_description: string
+          meta_title: string
+          primary_keyword: string | null
+          published: boolean
+          published_at: string
+          read_minutes: number
+          secondary_keywords: string[]
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string
+          category_slug: string
+          content: string
+          created_at?: string
+          excerpt: string
+          faq?: Json
+          featured_image?: string | null
+          id?: string
+          key_takeaways?: string[]
+          meta_description: string
+          meta_title: string
+          primary_keyword?: string | null
+          published?: boolean
+          published_at?: string
+          read_minutes?: number
+          secondary_keywords?: string[]
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          category_slug?: string
+          content?: string
+          created_at?: string
+          excerpt?: string
+          faq?: Json
+          featured_image?: string | null
+          id?: string
+          key_takeaways?: string[]
+          meta_description?: string
+          meta_title?: string
+          primary_keyword?: string | null
+          published?: boolean
+          published_at?: string
+          read_minutes?: number
+          secondary_keywords?: string[]
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_category_slug_fkey"
+            columns: ["category_slug"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["slug"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +280,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
