@@ -32,6 +32,7 @@ export const SiteFooter = () => {
           <ul className="space-y-2 text-sm">
             <li><Link to="/about" className="text-muted-foreground hover:text-foreground">About</Link></li>
             <li><Link to="/contact" className="text-muted-foreground hover:text-foreground">Contact</Link></li>
+            <li><Link to="/category/tools-resources" className="text-muted-foreground hover:text-foreground">Recommended Tools</Link></li>
             <li><Link to="/affiliate-disclosure" className="text-muted-foreground hover:text-foreground">Affiliate Disclosure</Link></li>
             <li><Link to="/disclaimer" className="text-muted-foreground hover:text-foreground">Disclaimer</Link></li>
             <li><Link to="/privacy-policy" className="text-muted-foreground hover:text-foreground">Privacy Policy</Link></li>
