@@ -10,6 +10,7 @@ import { CATEGORY_BY_SLUG } from "@/lib/categories";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveImage } from "@/lib/image-map";
 import { Clock, User } from "lucide-react";
+import DOMPurify from "dompurify";
 
 type Post = {
   slug: string;
@@ -147,7 +148,13 @@ const Post = () => {
 
         <div
           className="prose-article mt-8"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(post.content, {
+              USE_PROFILES: { html: true },
+              FORBID_TAGS: ["style", "script", "iframe", "object", "embed", "form"],
+              FORBID_ATTR: ["style", "onerror", "onload", "onclick"],
+            }),
+          }}
         />
 
         <Faq items={post.faq ?? []} />
