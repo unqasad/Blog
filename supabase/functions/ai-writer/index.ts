@@ -1,11 +1,15 @@
 // AI writer: generates one SEO-optimized affiliate-niche post and saves it as a DRAFT.
-// Triggered by pg_cron on a schedule, or manually from the admin panel.
+// Triggered manually from the admin panel (admin-only).
+
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
 };
+
+const GENERIC_ERROR = "Something went wrong. Please try again.";
 
 const CATEGORIES = [
   { slug: "start-here", name: "Start Here" },
@@ -106,9 +110,48 @@ Deno.serve(async (req) => {
   try {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+    const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
     const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    if (!LOVABLE_API_KEY || !SUPABASE_URL || !SERVICE_KEY) {
-      throw new Error("Missing required environment variables");
+    if (!LOVABLE_API_KEY || !SUPABASE_URL || !SERVICE_KEY || !SUPABASE_ANON_KEY) {
+      console.error("ai-writer: missing required environment variables");
+      return new Response(
+        JSON.stringify({ error: GENERIC_ERROR }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    // --- AuthN: require a valid caller JWT ---
+    const authHeader = req.headers.get("Authorization") ?? "";
+    if (!authHeader.startsWith("Bearer ")) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    const token = authHeader.replace("Bearer ", "");
+
+    const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const { data: userData, error: userErr } = await userClient.auth.getUser(token);
+    if (userErr || !userData?.user) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    // --- AuthZ: require admin role ---
+    const adminClient = createClient(SUPABASE_URL, SERVICE_KEY);
+    const { data: isAdmin, error: roleErr } = await adminClient.rpc("has_role", {
+      _user_id: userData.user.id,
+      _role: "admin",
+    });
+    if (roleErr || !isAdmin) {
+      return new Response(
+        JSON.stringify({ error: "Forbidden" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     const existing = await getExistingTopics(SUPABASE_URL, SERVICE_KEY);
@@ -165,7 +208,7 @@ Then call the create_post tool with a complete, publication-ready draft.${avoidL
         );
       }
       return new Response(
-        JSON.stringify({ error: "AI gateway error", detail: txt }),
+        JSON.stringify({ error: GENERIC_ERROR }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
@@ -173,7 +216,11 @@ Then call the create_post tool with a complete, publication-ready draft.${avoidL
     const aiJson = await aiRes.json();
     const toolCall = aiJson?.choices?.[0]?.message?.tool_calls?.[0];
     if (!toolCall?.function?.arguments) {
-      throw new Error("AI did not return a tool call");
+      console.error("ai-writer: AI did not return a tool call", JSON.stringify(aiJson).slice(0, 500));
+      return new Response(
+        JSON.stringify({ error: GENERIC_ERROR }),
+        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
     const draft = JSON.parse(toolCall.function.arguments);
 
@@ -217,8 +264,11 @@ Then call the create_post tool with a complete, publication-ready draft.${avoidL
 
     if (!insertRes.ok) {
       const txt = await insertRes.text();
-      console.error("Insert error:", insertRes.status, txt);
-      throw new Error(`Failed to save draft: ${txt}`);
+      console.error("ai-writer insert error:", insertRes.status, txt);
+      return new Response(
+        JSON.stringify({ error: GENERIC_ERROR }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     const inserted = await insertRes.json();
@@ -229,7 +279,7 @@ Then call the create_post tool with a complete, publication-ready draft.${avoidL
   } catch (e) {
     console.error("ai-writer error:", e);
     return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),
+      JSON.stringify({ error: GENERIC_ERROR }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   }
