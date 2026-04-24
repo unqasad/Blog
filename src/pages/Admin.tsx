@@ -42,12 +42,6 @@ type ContactMessage = {
 
 const statusVariant: Record<PostStatus, "secondary" | "outline" | "default"> = {
   draft: "secondary",
-  outline: "outline",
-  published: "default",
-} as unknown as Record<PostStatus, "secondary" | "outline" | "default">;
-
-const STATUS_VARIANT: Record<PostStatus, "secondary" | "outline" | "default"> = {
-  draft: "secondary",
   scheduled: "outline",
   published: "default",
 };
