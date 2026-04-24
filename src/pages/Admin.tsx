@@ -427,6 +427,91 @@ VALUES ('YOUR_USER_ID', 'admin');`}
           </Button>
         </section>
       </div>
+
+      {/* Contact inbox */}
+      <div className="container pb-16">
+        <section className="rounded-xl border border-border bg-card p-6 md:p-8 shadow-soft">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div>
+              <h2 className="font-serif text-2xl tracking-tight flex items-center gap-2">
+                <Mail className="h-5 w-5 text-primary" /> Contact inbox
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Messages submitted through the public contact form. Reply by emailing the
+                address shown directly.
+              </p>
+            </div>
+            <Badge variant="secondary">
+              {messages.filter((m) => !m.read).length} unread
+            </Badge>
+          </div>
+
+          <ul className="mt-6 divide-y divide-border border border-border rounded-lg overflow-hidden">
+            {messages.length === 0 && (
+              <li className="p-4 text-sm text-muted-foreground">
+                No contact messages yet.
+              </li>
+            )}
+            {messages.map((m) => (
+              <li
+                key={m.id}
+                className={`p-4 text-sm ${!m.read ? "bg-primary/[0.03]" : ""}`}
+              >
+                <div className="flex items-start justify-between gap-3 flex-wrap">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {!m.read && (
+                        <Badge variant="default" className="text-[10px]">
+                          New
+                        </Badge>
+                      )}
+                      <p className="font-medium">{m.name}</p>
+                      <a
+                        href={`mailto:${m.email}`}
+                        className="text-primary hover:underline"
+                      >
+                        {m.email}
+                      </a>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {new Date(m.created_at).toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => toggleMessageRead(m.id, m.read)}
+                      className="gap-1.5"
+                    >
+                      {m.read ? (
+                        <>
+                          <Mail className="h-3.5 w-3.5" /> Mark unread
+                        </>
+                      ) : (
+                        <>
+                          <MailOpen className="h-3.5 w-3.5" /> Mark read
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => deleteMessage(m.id)}
+                      className="gap-1.5"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" /> Delete
+                    </Button>
+                  </div>
+                </div>
+                <p className="mt-3 whitespace-pre-wrap text-foreground/90 leading-relaxed">
+                  {m.message}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
     </SiteLayout>
   );
 };
