@@ -10,10 +10,11 @@ const corsHeaders = {
 const CATEGORIES = [
   { slug: "start-here", name: "Start Here" },
   { slug: "offer-selection", name: "Offer Selection & Networks" },
-  { slug: "tracking-attribution", name: "Tracking & Attribution" },
-  { slug: "conversion-optimization", name: "Conversion Optimization" },
-  { slug: "traffic-funnels", name: "Traffic, Funnels & Campaign Strategy" },
-  { slug: "compliance-seo-monetization", name: "Compliance, SEO & Monetization" },
+  { slug: "tracking", name: "Tracking & Attribution" },
+  { slug: "conversion", name: "Conversion Optimization" },
+  { slug: "traffic-funnels", name: "Traffic, Funnels & Strategy" },
+  { slug: "compliance-seo", name: "Compliance, SEO & Monetization" },
+  { slug: "tools-resources", name: "Tools & Resources" },
 ];
 
 const TOOL_SCHEMA = {

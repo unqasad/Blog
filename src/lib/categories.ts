@@ -48,6 +48,13 @@ export const CATEGORIES: CategoryMeta[] = [
     description:
       "Affiliate disclosures, ad-friendly content, SEO for affiliate blogs, monetization systems, and the mistakes that get sites de-indexed or banned.",
   },
+  {
+    slug: "tools-resources",
+    name: "Tools & Resources",
+    short: "The stack behind the system",
+    description:
+      "Honest tool reviews, comparison guides, and recommended stacks across tracking, SEO, landing pages, email, analytics, and content workflow — chosen for builders who care about sustainable results.",
+  },
 ];
 
 export const CATEGORY_BY_SLUG = Object.fromEntries(

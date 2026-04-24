@@ -21,6 +21,7 @@ export const SiteHeader = () => {
           <Link to="/category/conversion" className="text-muted-foreground hover:text-foreground transition">Conversions</Link>
           <Link to="/category/traffic-funnels" className="text-muted-foreground hover:text-foreground transition">Traffic</Link>
           <Link to="/category/compliance-seo" className="text-muted-foreground hover:text-foreground transition">Compliance & SEO</Link>
+          <Link to="/category/tools-resources" className="text-muted-foreground hover:text-foreground transition">Tools</Link>
         </nav>
 
         <Link
