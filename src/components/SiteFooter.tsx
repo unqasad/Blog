@@ -8,9 +8,8 @@ export const SiteFooter = () => {
         <div className="md:col-span-2">
           <p className="font-serif text-2xl tracking-tight">Affiliate Compass</p>
           <p className="mt-3 max-w-md text-sm text-muted-foreground leading-relaxed">
-            A no-hype publication on affiliate marketing, CPA, tracking, conversions, and
-            compliance. We help beginners and struggling marketers make better decisions
-            and build sustainable online income — the honest way.
+            A modern publication on monetization, traffic, content strategy, and performance
+            systems for builders who want sustainable online results.
           </p>
         </div>
 
@@ -42,9 +41,8 @@ export const SiteFooter = () => {
       </div>
 
       <div className="border-t border-border">
-        <div className="container py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
+        <div className="container py-6 text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} Affiliate Compass. All rights reserved.</p>
-          <p>Educational content only. Results vary. We may earn a commission on linked offers.</p>
         </div>
       </div>
     </footer>
