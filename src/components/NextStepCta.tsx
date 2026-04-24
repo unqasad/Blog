@@ -3,9 +3,9 @@ import { ArrowRight } from "lucide-react";
 
 export const NextStepCta = ({
   title = "Get the next practical guide",
-  description = "Browse our beginner-friendly Start Here hub or jump straight into offer selection.",
+  description = "Browse our beginner-friendly Start Here hub or jump straight into offer evaluation.",
   primary = { label: "Start Here", to: "/category/start-here" },
-  secondary = { label: "Offer Selection", to: "/category/offer-selection" },
+  secondary = { label: "Offers & Earnings", to: "/category/offers-earnings" },
 }: {
   title?: string;
   description?: string;

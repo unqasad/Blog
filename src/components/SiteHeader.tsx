@@ -16,11 +16,10 @@ export const SiteHeader = () => {
 
         <nav aria-label="Primary" className="hidden md:flex items-center gap-6 text-sm">
           <Link to="/category/start-here" className="text-muted-foreground hover:text-foreground transition">Start Here</Link>
-          <Link to="/category/offer-selection" className="text-muted-foreground hover:text-foreground transition">Offers</Link>
+          <Link to="/category/offers-earnings" className="text-muted-foreground hover:text-foreground transition">Offers & Earnings</Link>
           <Link to="/category/tracking" className="text-muted-foreground hover:text-foreground transition">Tracking</Link>
-          <Link to="/category/conversion" className="text-muted-foreground hover:text-foreground transition">Conversions</Link>
-          <Link to="/category/traffic-funnels" className="text-muted-foreground hover:text-foreground transition">Traffic</Link>
-          <Link to="/category/compliance-seo" className="text-muted-foreground hover:text-foreground transition">Compliance & SEO</Link>
+          <Link to="/category/funnels-conversion" className="text-muted-foreground hover:text-foreground transition">Funnels & Conversion</Link>
+          <Link to="/category/seo-compliance" className="text-muted-foreground hover:text-foreground transition">Trust, SEO & Compliance</Link>
           <Link to="/category/tools-resources" className="text-muted-foreground hover:text-foreground transition">Tools</Link>
         </nav>
 

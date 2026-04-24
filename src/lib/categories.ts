@@ -14,11 +14,11 @@ export const CATEGORIES: CategoryMeta[] = [
       "Beginner guides, affiliate and CPA basics, key terminology, and setup checklists. Build a clear mental model before you spend a single dollar on traffic.",
   },
   {
-    slug: "offer-selection",
-    name: "Offer Selection & Networks",
-    short: "Pick offers that actually convert",
+    slug: "offers-earnings",
+    name: "Offers & Earnings",
+    short: "Pick offers that actually pay",
     description:
-      "How to choose offers, understand EPC and payout models, evaluate conversion potential, review affiliate programs and CPA networks, and spot red flags early.",
+      "How to evaluate offers, understand EPC and payout models, choose networks, and judge real earning potential without falling for hype.",
   },
   {
     slug: "tracking",
@@ -28,25 +28,18 @@ export const CATEGORIES: CategoryMeta[] = [
       "Tracking basics, UTM parameters, postback tracking, attribution issues, and how to read campaign data without fooling yourself.",
   },
   {
-    slug: "conversion",
-    name: "Conversion Optimization",
+    slug: "funnels-conversion",
+    name: "Funnels & Conversion",
     short: "Turn clicks into customers",
     description:
-      "Why clicks don't convert, landing page improvements, CTA optimization, trust signals, and mobile conversion issues.",
+      "Landing pages, funnels, traffic alignment, trust signals, and the conversion mechanics that turn clicks into customers.",
   },
   {
-    slug: "traffic-funnels",
-    name: "Traffic, Funnels & Strategy",
-    short: "Send the right people, the right way",
+    slug: "seo-compliance",
+    name: "Trust, SEO & Compliance",
+    short: "Built to last and stay approved",
     description:
-      "Traffic source comparisons, funnel basics, pre-landers, paid vs organic, and how to scale carefully without blowing up your budget.",
-  },
-  {
-    slug: "compliance-seo",
-    name: "Compliance, SEO & Monetization",
-    short: "Built to last (and stay approved)",
-    description:
-      "Affiliate disclosures, ad-friendly content, SEO for affiliate blogs, monetization systems, and the mistakes that get sites de-indexed or banned.",
+      "Editorial trust, SEO for monetized sites, affiliate disclosures, ad-friendly content, and the standards that keep a site approved and indexed long term.",
   },
   {
     slug: "tools-resources",

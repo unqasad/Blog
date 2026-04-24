@@ -17,7 +17,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { CATEGORIES } from "@/lib/categories";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sparkles, Loader2, Mail, MailOpen, Trash2 } from "lucide-react";
 
 type PostStatus = "draft" | "scheduled" | "published";
 
@@ -31,6 +31,15 @@ type AdminPost = {
   published_at: string;
 };
 
+type ContactMessage = {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  read: boolean;
+  created_at: string;
+};
+
 const statusVariant: Record<PostStatus, "secondary" | "outline" | "default"> = {
   draft: "secondary",
   scheduled: "outline",
@@ -41,6 +50,7 @@ const Admin = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [posts, setPosts] = useState<AdminPost[]>([]);
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [filter, setFilter] = useState<"all" | PostStatus>("all");
   const [generating, setGenerating] = useState(false);
   const [form, setForm] = useState({
@@ -66,7 +76,10 @@ const Admin = () => {
         .eq("user_id", data.session.user.id);
       const admin = (roleRows ?? []).some((r) => r.role === "admin");
       setIsAdmin(admin);
-      if (admin) loadPosts();
+      if (admin) {
+        loadPosts();
+        loadMessages();
+      }
     });
   }, [navigate]);
 
@@ -77,6 +90,38 @@ const Admin = () => {
       .order("published_at", { ascending: false })
       .limit(200);
     setPosts((data as AdminPost[]) ?? []);
+  };
+
+  const loadMessages = async () => {
+    const { data } = await supabase
+      .from("contact_messages")
+      .select("id,name,email,message,read,created_at")
+      .order("created_at", { ascending: false })
+      .limit(200);
+    setMessages((data as ContactMessage[]) ?? []);
+  };
+
+  const toggleMessageRead = async (id: string, read: boolean) => {
+    const { error } = await supabase
+      .from("contact_messages")
+      .update({ read: !read })
+      .eq("id", id);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    loadMessages();
+  };
+
+  const deleteMessage = async (id: string) => {
+    if (!confirm("Delete this contact message?")) return;
+    const { error } = await supabase.from("contact_messages").delete().eq("id", id);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Message deleted" });
+    loadMessages();
   };
 
   const submit = async (e: React.FormEvent) => {
@@ -380,6 +425,91 @@ VALUES ('YOUR_USER_ID', 'admin');`}
           >
             Sign out
           </Button>
+        </section>
+      </div>
+
+      {/* Contact inbox */}
+      <div className="container pb-16">
+        <section className="rounded-xl border border-border bg-card p-6 md:p-8 shadow-soft">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div>
+              <h2 className="font-serif text-2xl tracking-tight flex items-center gap-2">
+                <Mail className="h-5 w-5 text-primary" /> Contact inbox
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Messages submitted through the public contact form. Reply by emailing the
+                address shown directly.
+              </p>
+            </div>
+            <Badge variant="secondary">
+              {messages.filter((m) => !m.read).length} unread
+            </Badge>
+          </div>
+
+          <ul className="mt-6 divide-y divide-border border border-border rounded-lg overflow-hidden">
+            {messages.length === 0 && (
+              <li className="p-4 text-sm text-muted-foreground">
+                No contact messages yet.
+              </li>
+            )}
+            {messages.map((m) => (
+              <li
+                key={m.id}
+                className={`p-4 text-sm ${!m.read ? "bg-primary/[0.03]" : ""}`}
+              >
+                <div className="flex items-start justify-between gap-3 flex-wrap">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {!m.read && (
+                        <Badge variant="default" className="text-[10px]">
+                          New
+                        </Badge>
+                      )}
+                      <p className="font-medium">{m.name}</p>
+                      <a
+                        href={`mailto:${m.email}`}
+                        className="text-primary hover:underline"
+                      >
+                        {m.email}
+                      </a>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {new Date(m.created_at).toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => toggleMessageRead(m.id, m.read)}
+                      className="gap-1.5"
+                    >
+                      {m.read ? (
+                        <>
+                          <Mail className="h-3.5 w-3.5" /> Mark unread
+                        </>
+                      ) : (
+                        <>
+                          <MailOpen className="h-3.5 w-3.5" /> Mark read
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => deleteMessage(m.id)}
+                      className="gap-1.5"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" /> Delete
+                    </Button>
+                  </div>
+                </div>
+                <p className="mt-3 whitespace-pre-wrap text-foreground/90 leading-relaxed">
+                  {m.message}
+                </p>
+              </li>
+            ))}
+          </ul>
         </section>
       </div>
     </SiteLayout>
