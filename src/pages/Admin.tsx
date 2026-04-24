@@ -17,7 +17,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { CATEGORIES } from "@/lib/categories";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sparkles, Loader2, Mail, MailOpen, Trash2 } from "lucide-react";
 
 type PostStatus = "draft" | "scheduled" | "published";
 
@@ -31,7 +31,22 @@ type AdminPost = {
   published_at: string;
 };
 
+type ContactMessage = {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  read: boolean;
+  created_at: string;
+};
+
 const statusVariant: Record<PostStatus, "secondary" | "outline" | "default"> = {
+  draft: "secondary",
+  outline: "outline",
+  published: "default",
+} as unknown as Record<PostStatus, "secondary" | "outline" | "default">;
+
+const STATUS_VARIANT: Record<PostStatus, "secondary" | "outline" | "default"> = {
   draft: "secondary",
   scheduled: "outline",
   published: "default",
