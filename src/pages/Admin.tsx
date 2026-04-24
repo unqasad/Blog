@@ -50,6 +50,7 @@ const Admin = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [posts, setPosts] = useState<AdminPost[]>([]);
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [filter, setFilter] = useState<"all" | PostStatus>("all");
   const [generating, setGenerating] = useState(false);
   const [form, setForm] = useState({
@@ -75,7 +76,10 @@ const Admin = () => {
         .eq("user_id", data.session.user.id);
       const admin = (roleRows ?? []).some((r) => r.role === "admin");
       setIsAdmin(admin);
-      if (admin) loadPosts();
+      if (admin) {
+        loadPosts();
+        loadMessages();
+      }
     });
   }, [navigate]);
 
@@ -86,6 +90,38 @@ const Admin = () => {
       .order("published_at", { ascending: false })
       .limit(200);
     setPosts((data as AdminPost[]) ?? []);
+  };
+
+  const loadMessages = async () => {
+    const { data } = await supabase
+      .from("contact_messages")
+      .select("id,name,email,message,read,created_at")
+      .order("created_at", { ascending: false })
+      .limit(200);
+    setMessages((data as ContactMessage[]) ?? []);
+  };
+
+  const toggleMessageRead = async (id: string, read: boolean) => {
+    const { error } = await supabase
+      .from("contact_messages")
+      .update({ read: !read })
+      .eq("id", id);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    loadMessages();
+  };
+
+  const deleteMessage = async (id: string) => {
+    if (!confirm("Delete this contact message?")) return;
+    const { error } = await supabase.from("contact_messages").delete().eq("id", id);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Message deleted" });
+    loadMessages();
   };
 
   const submit = async (e: React.FormEvent) => {
