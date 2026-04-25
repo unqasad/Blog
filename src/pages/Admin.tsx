@@ -136,6 +136,69 @@ const Admin = () => {
     setMessages((data as ContactMessage[]) ?? []);
   };
 
+  const loadLog = async () => {
+    const { data } = await supabase
+      .from("generation_log")
+      .select(
+        "id,created_at,source,status,category_slug,primary_keyword,chosen_title,article_angle,post_slug,skip_reason,error_message",
+      )
+      .order("created_at", { ascending: false })
+      .limit(20);
+    setLogEntries((data as GenerationLogEntry[]) ?? []);
+  };
+
+  const loadAffiliateLinks = async () => {
+    const { data } = await supabase
+      .from("affiliate_links")
+      .select("id,tool_slug,tool_name,affiliate_url,homepage_url,category,active")
+      .order("tool_name", { ascending: true });
+    setAffiliateLinks((data as AffiliateLink[]) ?? []);
+  };
+
+  const addAffiliateLink = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAff.tool_slug || !newAff.tool_name || !newAff.affiliate_url) {
+      toast({ title: "Missing fields", variant: "destructive" });
+      return;
+    }
+    const { error } = await supabase.from("affiliate_links").insert({
+      tool_slug: newAff.tool_slug.toLowerCase().trim(),
+      tool_name: newAff.tool_name.trim(),
+      affiliate_url: newAff.affiliate_url.trim(),
+      homepage_url: newAff.homepage_url.trim() || null,
+      category: newAff.category.trim() || null,
+    });
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Affiliate link added" });
+    setNewAff({ tool_slug: "", tool_name: "", affiliate_url: "", homepage_url: "", category: "" });
+    loadAffiliateLinks();
+  };
+
+  const toggleAffiliateLink = async (id: string, active: boolean) => {
+    const { error } = await supabase
+      .from("affiliate_links")
+      .update({ active: !active })
+      .eq("id", id);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    loadAffiliateLinks();
+  };
+
+  const deleteAffiliateLink = async (id: string) => {
+    if (!confirm("Delete this affiliate link?")) return;
+    const { error } = await supabase.from("affiliate_links").delete().eq("id", id);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    loadAffiliateLinks();
+  };
+
   const toggleMessageRead = async (id: string, read: boolean) => {
     const { error } = await supabase
       .from("contact_messages")
