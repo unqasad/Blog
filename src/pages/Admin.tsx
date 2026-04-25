@@ -616,6 +616,184 @@ VALUES ('YOUR_USER_ID', 'admin');`}
             ))}
           </ul>
         </section>
+
+        {/* Autonomous generation log */}
+        <section className="mt-10 rounded-xl border border-border bg-card p-6 md:p-8 shadow-soft">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div>
+              <h2 className="font-serif text-2xl tracking-tight flex items-center gap-2">
+                <Bot className="h-5 w-5 text-primary" /> Autonomous draft log
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                The autonomous writer runs every 12 hours, researches topics, picks the best fit, and saves a draft here for your review. Nothing is published automatically.
+              </p>
+            </div>
+            <Badge variant="secondary">{logEntries.length} recent runs</Badge>
+          </div>
+          <ul className="mt-6 divide-y divide-border border border-border rounded-lg overflow-hidden">
+            {logEntries.length === 0 && (
+              <li className="p-4 text-sm text-muted-foreground">
+                No autonomous runs yet. The first scheduled run will appear here.
+              </li>
+            )}
+            {logEntries.map((l) => (
+              <li key={l.id} className="p-4 text-sm">
+                <div className="flex items-start justify-between gap-3 flex-wrap">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge
+                        variant={
+                          l.status === "drafted"
+                            ? "default"
+                            : l.status === "skipped"
+                            ? "outline"
+                            : "destructive"
+                        }
+                        className="capitalize"
+                      >
+                        {l.status}
+                      </Badge>
+                      <Badge variant="secondary" className="capitalize">{l.source}</Badge>
+                      {l.category_slug && (
+                        <Badge variant="outline">{l.category_slug}</Badge>
+                      )}
+                      <p className="font-medium truncate">
+                        {l.chosen_title ?? "(no topic chosen)"}
+                      </p>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {new Date(l.created_at).toLocaleString()}
+                      {l.primary_keyword && <> · kw: {l.primary_keyword}</>}
+                    </p>
+                    {l.article_angle && (
+                      <p className="text-xs text-foreground/80 mt-2">{l.article_angle}</p>
+                    )}
+                    {l.skip_reason && (
+                      <p className="text-xs text-muted-foreground mt-1 italic">
+                        Note: {l.skip_reason}
+                      </p>
+                    )}
+                    {l.error_message && (
+                      <p className="text-xs text-destructive mt-1">{l.error_message}</p>
+                    )}
+                  </div>
+                  {l.post_slug && (
+                    <a
+                      href={`/blog/${l.post_slug}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-primary text-xs hover:underline shrink-0"
+                    >
+                      Review draft →
+                    </a>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Affiliate link inventory */}
+        <section className="mt-10 rounded-xl border border-border bg-card p-6 md:p-8 shadow-soft">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div>
+              <h2 className="font-serif text-2xl tracking-tight flex items-center gap-2">
+                <Link2 className="h-5 w-5 text-primary" /> Affiliate link inventory
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                The autonomous writer will only draft tool comparisons, reviews, or recommendation posts when every required tool has an active affiliate link here. Tools mentioned inside non-tool articles use their official homepage unless an affiliate link is on file.
+              </p>
+            </div>
+          </div>
+
+          <form onSubmit={addAffiliateLink} className="mt-6 grid gap-3 md:grid-cols-5">
+            <div className="md:col-span-1">
+              <Label className="text-xs">Tool slug</Label>
+              <Input
+                placeholder="voluum"
+                value={newAff.tool_slug}
+                onChange={(e) => setNewAff({ ...newAff, tool_slug: e.target.value })}
+              />
+            </div>
+            <div className="md:col-span-1">
+              <Label className="text-xs">Tool name</Label>
+              <Input
+                placeholder="Voluum"
+                value={newAff.tool_name}
+                onChange={(e) => setNewAff({ ...newAff, tool_name: e.target.value })}
+              />
+            </div>
+            <div className="md:col-span-1">
+              <Label className="text-xs">Category</Label>
+              <Input
+                placeholder="tracking"
+                value={newAff.category}
+                onChange={(e) => setNewAff({ ...newAff, category: e.target.value })}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <Label className="text-xs">Affiliate URL</Label>
+              <Input
+                placeholder="https://voluum.com/?aff=..."
+                value={newAff.affiliate_url}
+                onChange={(e) => setNewAff({ ...newAff, affiliate_url: e.target.value })}
+              />
+            </div>
+            <div className="md:col-span-4">
+              <Label className="text-xs">Homepage (optional fallback)</Label>
+              <Input
+                placeholder="https://voluum.com"
+                value={newAff.homepage_url}
+                onChange={(e) => setNewAff({ ...newAff, homepage_url: e.target.value })}
+              />
+            </div>
+            <div className="md:col-span-1 flex items-end">
+              <Button type="submit" className="w-full gap-2">
+                <Plus className="h-4 w-4" /> Add
+              </Button>
+            </div>
+          </form>
+
+          <ul className="mt-6 divide-y divide-border border border-border rounded-lg overflow-hidden">
+            {affiliateLinks.length === 0 && (
+              <li className="p-4 text-sm text-muted-foreground">
+                No affiliate links stored yet. Tool/comparison/review posts will be skipped until at least one is added.
+              </li>
+            )}
+            {affiliateLinks.map((a) => (
+              <li key={a.id} className="p-3 text-sm flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge variant={a.active ? "default" : "outline"} className="capitalize">
+                      {a.active ? "active" : "inactive"}
+                    </Badge>
+                    <p className="font-medium truncate">{a.tool_name}</p>
+                    <span className="text-xs text-muted-foreground">({a.tool_slug})</span>
+                    {a.category && (
+                      <Badge variant="secondary" className="text-[10px]">{a.category}</Badge>
+                    )}
+                  </div>
+                  <a
+                    href={a.affiliate_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs text-primary hover:underline truncate block mt-1"
+                  >
+                    {a.affiliate_url}
+                  </a>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <Button size="sm" variant="outline" onClick={() => toggleAffiliateLink(a.id, a.active)}>
+                    {a.active ? "Disable" : "Enable"}
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => deleteAffiliateLink(a.id)}>
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
       </div>
     </SiteLayout>
   );
