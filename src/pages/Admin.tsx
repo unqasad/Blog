@@ -291,15 +291,22 @@ const Admin = () => {
   const generateDraft = async () => {
     setGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("ai-writer", {
+      const { data, error } = await supabase.functions.invoke("auto-writer", {
         body: { source: "manual" },
       });
       if (error) throw error;
-      if ((data as { error?: string })?.error) {
-        throw new Error((data as { error: string }).error);
+      const payload = data as { error?: string; skipped?: boolean; reason?: string };
+      if (payload?.error) throw new Error(payload.error);
+      if (payload?.skipped) {
+        toast({
+          title: "Run skipped",
+          description: payload.reason ?? "No strong topic this run.",
+        });
+      } else {
+        toast({ title: "Draft generated", description: "New autonomous draft saved for review." });
       }
-      toast({ title: "Draft generated", description: "New AI draft saved for review." });
       loadPosts();
+      loadLog();
     } catch (e) {
       toast({
         title: "Generation failed",
