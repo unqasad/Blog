@@ -17,9 +17,33 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { CATEGORIES } from "@/lib/categories";
-import { Sparkles, Loader2, Mail, MailOpen, Trash2 } from "lucide-react";
+import { Sparkles, Loader2, Mail, MailOpen, Trash2, Bot, Link2, Plus } from "lucide-react";
 
 type PostStatus = "draft" | "scheduled" | "published";
+
+type GenerationLogEntry = {
+  id: string;
+  created_at: string;
+  source: string;
+  status: string;
+  category_slug: string | null;
+  primary_keyword: string | null;
+  chosen_title: string | null;
+  article_angle: string | null;
+  post_slug: string | null;
+  skip_reason: string | null;
+  error_message: string | null;
+};
+
+type AffiliateLink = {
+  id: string;
+  tool_slug: string;
+  tool_name: string;
+  affiliate_url: string;
+  homepage_url: string | null;
+  category: string | null;
+  active: boolean;
+};
 
 type AdminPost = {
   id: string;
