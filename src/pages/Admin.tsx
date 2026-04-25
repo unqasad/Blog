@@ -75,8 +75,17 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [posts, setPosts] = useState<AdminPost[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [logEntries, setLogEntries] = useState<GenerationLogEntry[]>([]);
+  const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLink[]>([]);
   const [filter, setFilter] = useState<"all" | PostStatus>("all");
   const [generating, setGenerating] = useState(false);
+  const [newAff, setNewAff] = useState({
+    tool_slug: "",
+    tool_name: "",
+    affiliate_url: "",
+    homepage_url: "",
+    category: "",
+  });
   const [form, setForm] = useState({
     slug: "",
     title: "",
