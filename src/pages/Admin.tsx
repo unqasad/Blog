@@ -17,9 +17,33 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { CATEGORIES } from "@/lib/categories";
-import { Sparkles, Loader2, Mail, MailOpen, Trash2 } from "lucide-react";
+import { Sparkles, Loader2, Mail, MailOpen, Trash2, Bot, Link2, Plus } from "lucide-react";
 
 type PostStatus = "draft" | "scheduled" | "published";
+
+type GenerationLogEntry = {
+  id: string;
+  created_at: string;
+  source: string;
+  status: string;
+  category_slug: string | null;
+  primary_keyword: string | null;
+  chosen_title: string | null;
+  article_angle: string | null;
+  post_slug: string | null;
+  skip_reason: string | null;
+  error_message: string | null;
+};
+
+type AffiliateLink = {
+  id: string;
+  tool_slug: string;
+  tool_name: string;
+  affiliate_url: string;
+  homepage_url: string | null;
+  category: string | null;
+  active: boolean;
+};
 
 type AdminPost = {
   id: string;
@@ -51,8 +75,17 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [posts, setPosts] = useState<AdminPost[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [logEntries, setLogEntries] = useState<GenerationLogEntry[]>([]);
+  const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLink[]>([]);
   const [filter, setFilter] = useState<"all" | PostStatus>("all");
   const [generating, setGenerating] = useState(false);
+  const [newAff, setNewAff] = useState({
+    tool_slug: "",
+    tool_name: "",
+    affiliate_url: "",
+    homepage_url: "",
+    category: "",
+  });
   const [form, setForm] = useState({
     slug: "",
     title: "",
@@ -79,6 +112,8 @@ const Admin = () => {
       if (admin) {
         loadPosts();
         loadMessages();
+        loadLog();
+        loadAffiliateLinks();
       }
     });
   }, [navigate]);
@@ -99,6 +134,69 @@ const Admin = () => {
       .order("created_at", { ascending: false })
       .limit(200);
     setMessages((data as ContactMessage[]) ?? []);
+  };
+
+  const loadLog = async () => {
+    const { data } = await supabase
+      .from("generation_log")
+      .select(
+        "id,created_at,source,status,category_slug,primary_keyword,chosen_title,article_angle,post_slug,skip_reason,error_message",
+      )
+      .order("created_at", { ascending: false })
+      .limit(20);
+    setLogEntries((data as GenerationLogEntry[]) ?? []);
+  };
+
+  const loadAffiliateLinks = async () => {
+    const { data } = await supabase
+      .from("affiliate_links")
+      .select("id,tool_slug,tool_name,affiliate_url,homepage_url,category,active")
+      .order("tool_name", { ascending: true });
+    setAffiliateLinks((data as AffiliateLink[]) ?? []);
+  };
+
+  const addAffiliateLink = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAff.tool_slug || !newAff.tool_name || !newAff.affiliate_url) {
+      toast({ title: "Missing fields", variant: "destructive" });
+      return;
+    }
+    const { error } = await supabase.from("affiliate_links").insert({
+      tool_slug: newAff.tool_slug.toLowerCase().trim(),
+      tool_name: newAff.tool_name.trim(),
+      affiliate_url: newAff.affiliate_url.trim(),
+      homepage_url: newAff.homepage_url.trim() || null,
+      category: newAff.category.trim() || null,
+    });
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Affiliate link added" });
+    setNewAff({ tool_slug: "", tool_name: "", affiliate_url: "", homepage_url: "", category: "" });
+    loadAffiliateLinks();
+  };
+
+  const toggleAffiliateLink = async (id: string, active: boolean) => {
+    const { error } = await supabase
+      .from("affiliate_links")
+      .update({ active: !active })
+      .eq("id", id);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    loadAffiliateLinks();
+  };
+
+  const deleteAffiliateLink = async (id: string) => {
+    if (!confirm("Delete this affiliate link?")) return;
+    const { error } = await supabase.from("affiliate_links").delete().eq("id", id);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    loadAffiliateLinks();
   };
 
   const toggleMessageRead = async (id: string, read: boolean) => {
@@ -193,15 +291,22 @@ const Admin = () => {
   const generateDraft = async () => {
     setGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("ai-writer", {
+      const { data, error } = await supabase.functions.invoke("auto-writer", {
         body: { source: "manual" },
       });
       if (error) throw error;
-      if ((data as { error?: string })?.error) {
-        throw new Error((data as { error: string }).error);
+      const payload = data as { error?: string; skipped?: boolean; reason?: string };
+      if (payload?.error) throw new Error(payload.error);
+      if (payload?.skipped) {
+        toast({
+          title: "Run skipped",
+          description: payload.reason ?? "No strong topic this run.",
+        });
+      } else {
+        toast({ title: "Draft generated", description: "New autonomous draft saved for review." });
       }
-      toast({ title: "Draft generated", description: "New AI draft saved for review." });
       loadPosts();
+      loadLog();
     } catch (e) {
       toast({
         title: "Generation failed",
@@ -274,8 +379,7 @@ VALUES ('YOUR_USER_ID', 'admin');`}
             </Button>
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
-            The AI writer runs automatically twice a day and saves drafts here for review.
-            You can also write a post manually below.
+            The autonomous writer runs every 12 hours: it researches topics, picks the best fit, and saves a full draft below for your review. You can also write a post manually below or trigger a run on demand.
           </p>
           <form onSubmit={submit} className="mt-6 space-y-4">
             <div>
@@ -507,6 +611,184 @@ VALUES ('YOUR_USER_ID', 'admin');`}
                 <p className="mt-3 whitespace-pre-wrap text-foreground/90 leading-relaxed">
                   {m.message}
                 </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Autonomous generation log */}
+        <section className="mt-10 rounded-xl border border-border bg-card p-6 md:p-8 shadow-soft">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div>
+              <h2 className="font-serif text-2xl tracking-tight flex items-center gap-2">
+                <Bot className="h-5 w-5 text-primary" /> Autonomous draft log
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                The autonomous writer runs every 12 hours, researches topics, picks the best fit, and saves a draft here for your review. Nothing is published automatically.
+              </p>
+            </div>
+            <Badge variant="secondary">{logEntries.length} recent runs</Badge>
+          </div>
+          <ul className="mt-6 divide-y divide-border border border-border rounded-lg overflow-hidden">
+            {logEntries.length === 0 && (
+              <li className="p-4 text-sm text-muted-foreground">
+                No autonomous runs yet. The first scheduled run will appear here.
+              </li>
+            )}
+            {logEntries.map((l) => (
+              <li key={l.id} className="p-4 text-sm">
+                <div className="flex items-start justify-between gap-3 flex-wrap">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge
+                        variant={
+                          l.status === "drafted"
+                            ? "default"
+                            : l.status === "skipped"
+                            ? "outline"
+                            : "destructive"
+                        }
+                        className="capitalize"
+                      >
+                        {l.status}
+                      </Badge>
+                      <Badge variant="secondary" className="capitalize">{l.source}</Badge>
+                      {l.category_slug && (
+                        <Badge variant="outline">{l.category_slug}</Badge>
+                      )}
+                      <p className="font-medium truncate">
+                        {l.chosen_title ?? "(no topic chosen)"}
+                      </p>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {new Date(l.created_at).toLocaleString()}
+                      {l.primary_keyword && <> · kw: {l.primary_keyword}</>}
+                    </p>
+                    {l.article_angle && (
+                      <p className="text-xs text-foreground/80 mt-2">{l.article_angle}</p>
+                    )}
+                    {l.skip_reason && (
+                      <p className="text-xs text-muted-foreground mt-1 italic">
+                        Note: {l.skip_reason}
+                      </p>
+                    )}
+                    {l.error_message && (
+                      <p className="text-xs text-destructive mt-1">{l.error_message}</p>
+                    )}
+                  </div>
+                  {l.post_slug && (
+                    <a
+                      href={`/blog/${l.post_slug}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-primary text-xs hover:underline shrink-0"
+                    >
+                      Review draft →
+                    </a>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Affiliate link inventory */}
+        <section className="mt-10 rounded-xl border border-border bg-card p-6 md:p-8 shadow-soft">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div>
+              <h2 className="font-serif text-2xl tracking-tight flex items-center gap-2">
+                <Link2 className="h-5 w-5 text-primary" /> Affiliate link inventory
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                The autonomous writer will only draft tool comparisons, reviews, or recommendation posts when every required tool has an active affiliate link here. Tools mentioned inside non-tool articles use their official homepage unless an affiliate link is on file.
+              </p>
+            </div>
+          </div>
+
+          <form onSubmit={addAffiliateLink} className="mt-6 grid gap-3 md:grid-cols-5">
+            <div className="md:col-span-1">
+              <Label className="text-xs">Tool slug</Label>
+              <Input
+                placeholder="voluum"
+                value={newAff.tool_slug}
+                onChange={(e) => setNewAff({ ...newAff, tool_slug: e.target.value })}
+              />
+            </div>
+            <div className="md:col-span-1">
+              <Label className="text-xs">Tool name</Label>
+              <Input
+                placeholder="Voluum"
+                value={newAff.tool_name}
+                onChange={(e) => setNewAff({ ...newAff, tool_name: e.target.value })}
+              />
+            </div>
+            <div className="md:col-span-1">
+              <Label className="text-xs">Category</Label>
+              <Input
+                placeholder="tracking"
+                value={newAff.category}
+                onChange={(e) => setNewAff({ ...newAff, category: e.target.value })}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <Label className="text-xs">Affiliate URL</Label>
+              <Input
+                placeholder="https://voluum.com/?aff=..."
+                value={newAff.affiliate_url}
+                onChange={(e) => setNewAff({ ...newAff, affiliate_url: e.target.value })}
+              />
+            </div>
+            <div className="md:col-span-4">
+              <Label className="text-xs">Homepage (optional fallback)</Label>
+              <Input
+                placeholder="https://voluum.com"
+                value={newAff.homepage_url}
+                onChange={(e) => setNewAff({ ...newAff, homepage_url: e.target.value })}
+              />
+            </div>
+            <div className="md:col-span-1 flex items-end">
+              <Button type="submit" className="w-full gap-2">
+                <Plus className="h-4 w-4" /> Add
+              </Button>
+            </div>
+          </form>
+
+          <ul className="mt-6 divide-y divide-border border border-border rounded-lg overflow-hidden">
+            {affiliateLinks.length === 0 && (
+              <li className="p-4 text-sm text-muted-foreground">
+                No affiliate links stored yet. Tool/comparison/review posts will be skipped until at least one is added.
+              </li>
+            )}
+            {affiliateLinks.map((a) => (
+              <li key={a.id} className="p-3 text-sm flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge variant={a.active ? "default" : "outline"} className="capitalize">
+                      {a.active ? "active" : "inactive"}
+                    </Badge>
+                    <p className="font-medium truncate">{a.tool_name}</p>
+                    <span className="text-xs text-muted-foreground">({a.tool_slug})</span>
+                    {a.category && (
+                      <Badge variant="secondary" className="text-[10px]">{a.category}</Badge>
+                    )}
+                  </div>
+                  <a
+                    href={a.affiliate_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs text-primary hover:underline truncate block mt-1"
+                  >
+                    {a.affiliate_url}
+                  </a>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <Button size="sm" variant="outline" onClick={() => toggleAffiliateLink(a.id, a.active)}>
+                    {a.active ? "Disable" : "Enable"}
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => deleteAffiliateLink(a.id)}>
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
               </li>
             ))}
           </ul>

@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      affiliate_links: {
+        Row: {
+          active: boolean
+          affiliate_url: string
+          category: string | null
+          created_at: string
+          homepage_url: string | null
+          id: string
+          notes: string | null
+          tool_name: string
+          tool_slug: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          affiliate_url: string
+          category?: string | null
+          created_at?: string
+          homepage_url?: string | null
+          id?: string
+          notes?: string | null
+          tool_name: string
+          tool_slug: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          affiliate_url?: string
+          category?: string | null
+          created_at?: string
+          homepage_url?: string | null
+          id?: string
+          notes?: string | null
+          tool_name?: string
+          tool_slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           color: string
@@ -68,6 +107,54 @@ export type Database = {
           message?: string
           name?: string
           read?: boolean
+        }
+        Relationships: []
+      }
+      generation_log: {
+        Row: {
+          article_angle: string | null
+          candidates: Json
+          category_slug: string | null
+          chosen_title: string | null
+          created_at: string
+          error_message: string | null
+          id: string
+          post_id: string | null
+          post_slug: string | null
+          primary_keyword: string | null
+          skip_reason: string | null
+          source: string
+          status: string
+        }
+        Insert: {
+          article_angle?: string | null
+          candidates?: Json
+          category_slug?: string | null
+          chosen_title?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          post_id?: string | null
+          post_slug?: string | null
+          primary_keyword?: string | null
+          skip_reason?: string | null
+          source?: string
+          status: string
+        }
+        Update: {
+          article_angle?: string | null
+          candidates?: Json
+          category_slug?: string | null
+          chosen_title?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          post_id?: string | null
+          post_slug?: string | null
+          primary_keyword?: string | null
+          skip_reason?: string | null
+          source?: string
+          status?: string
         }
         Relationships: []
       }
