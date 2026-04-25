@@ -379,8 +379,7 @@ VALUES ('YOUR_USER_ID', 'admin');`}
             </Button>
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
-            The AI writer runs automatically twice a day and saves drafts here for review.
-            You can also write a post manually below.
+            The autonomous writer runs every 12 hours: it researches topics, picks the best fit, and saves a full draft below for your review. You can also write a post manually below or trigger a run on demand.
           </p>
           <form onSubmit={submit} className="mt-6 space-y-4">
             <div>
