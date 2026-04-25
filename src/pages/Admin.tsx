@@ -112,6 +112,8 @@ const Admin = () => {
       if (admin) {
         loadPosts();
         loadMessages();
+        loadLog();
+        loadAffiliateLinks();
       }
     });
   }, [navigate]);
