@@ -184,6 +184,8 @@ const Post = () => {
 
         <Faq items={post.faq ?? []} />
 
+        <ContinueReadingCta variant="end" />
+
         <NextStepCta />
 
         <aside className="mt-10 rounded-lg border border-dashed border-border bg-muted/40 p-4 text-xs text-muted-foreground">
