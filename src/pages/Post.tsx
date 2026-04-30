@@ -147,16 +147,40 @@ const Post = () => {
 
         <KeyTakeaways items={post.key_takeaways ?? []} />
 
-        <div
-          className="prose-article mt-8"
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(post.content, {
-              USE_PROFILES: { html: true },
-              FORBID_TAGS: ["style", "script", "iframe", "object", "embed", "form"],
-              FORBID_ATTR: ["style", "onerror", "onload", "onclick"],
-            }),
-          }}
-        />
+        {(() => {
+          const sanitized = DOMPurify.sanitize(post.content, {
+            USE_PROFILES: { html: true },
+            FORBID_TAGS: ["style", "script", "iframe", "object", "embed", "form"],
+            FORBID_ATTR: ["style", "onerror", "onload", "onclick"],
+          });
+          // Split at the closing </p> nearest the midpoint to keep markup valid.
+          const mid = Math.floor(sanitized.length / 2);
+          const splitIdx = sanitized.indexOf("</p>", mid);
+          if (splitIdx === -1) {
+            return (
+              <div
+                className="prose-article mt-8"
+                dangerouslySetInnerHTML={{ __html: sanitized }}
+              />
+            );
+          }
+          const cut = splitIdx + 4;
+          const first = sanitized.slice(0, cut);
+          const second = sanitized.slice(cut);
+          return (
+            <>
+              <div
+                className="prose-article mt-8"
+                dangerouslySetInnerHTML={{ __html: first }}
+              />
+              <ContinueReadingCta variant="inline" />
+              <div
+                className="prose-article"
+                dangerouslySetInnerHTML={{ __html: second }}
+              />
+            </>
+          );
+        })()}
 
         <Faq items={post.faq ?? []} />
 
