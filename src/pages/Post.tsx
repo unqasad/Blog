@@ -6,6 +6,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import Faq from "@/components/Faq";
 import KeyTakeaways from "@/components/KeyTakeaways";
 import NextStepCta from "@/components/NextStepCta";
+import ContinueReadingCta from "@/components/ContinueReadingCta";
 import { CATEGORY_BY_SLUG } from "@/lib/categories";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveImage } from "@/lib/image-map";
