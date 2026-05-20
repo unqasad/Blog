@@ -91,7 +91,6 @@ const Post = () => {
 
   return (
     <SiteLayout>
-      <AdsterraSocialBar />
       <Seo
         title={post.meta_title}
         description={post.meta_description}
