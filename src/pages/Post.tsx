@@ -172,7 +172,6 @@ const Post = () => {
                 className="prose-article mt-8"
                 dangerouslySetInnerHTML={{ __html: first }}
               />
-              <ContinueReadingCta variant="inline" />
               <div
                 className="prose-article"
                 dangerouslySetInnerHTML={{ __html: second }}
