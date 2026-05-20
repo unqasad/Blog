@@ -6,8 +6,6 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import Faq from "@/components/Faq";
 import KeyTakeaways from "@/components/KeyTakeaways";
 import NextStepCta from "@/components/NextStepCta";
-import ContinueReadingCta from "@/components/ContinueReadingCta";
-import AdsterraSocialBar from "@/components/AdsterraSocialBar";
 import { CATEGORY_BY_SLUG } from "@/lib/categories";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveImage } from "@/lib/image-map";
@@ -93,7 +91,6 @@ const Post = () => {
 
   return (
     <SiteLayout>
-      <AdsterraSocialBar />
       <Seo
         title={post.meta_title}
         description={post.meta_description}
@@ -175,7 +172,6 @@ const Post = () => {
                 className="prose-article mt-8"
                 dangerouslySetInnerHTML={{ __html: first }}
               />
-              <ContinueReadingCta variant="inline" />
               <div
                 className="prose-article"
                 dangerouslySetInnerHTML={{ __html: second }}
@@ -185,8 +181,6 @@ const Post = () => {
         })()}
 
         <Faq items={post.faq ?? []} />
-
-        <ContinueReadingCta variant="end" />
 
         <NextStepCta />
 
