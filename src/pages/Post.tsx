@@ -75,7 +75,7 @@ const Post = () => {
     image: post.featured_image ? [post.featured_image] : undefined,
     datePublished: post.published_at,
     author: { "@type": "Organization", name: post.author },
-    publisher: { "@type": "Organization", name: "Affiliate Compass" },
+    publisher: { "@type": "Organization", name: "AI Compass" },
   };
   const faqJsonLd = post.faq?.length
     ? {
@@ -183,12 +183,6 @@ const Post = () => {
         <Faq items={post.faq ?? []} />
 
         <NextStepCta />
-
-        <aside className="mt-10 rounded-lg border border-dashed border-border bg-muted/40 p-4 text-xs text-muted-foreground">
-          <strong className="text-foreground">Disclosure:</strong> Articles on Affiliate Compass may contain
-          affiliate links. If you click and make a purchase, we may earn a commission at no extra cost to
-          you. We only recommend resources we believe are genuinely useful.
-        </aside>
       </article>
     </SiteLayout>
   );
