@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
 export const NextStepCta = ({
-  title = "Get the next practical guide",
-  description = "Browse our beginner-friendly Start Here hub or jump straight into offer evaluation.",
-  primary = { label: "Start Here", to: "/category/start-here" },
-  secondary = { label: "Offers & Earnings", to: "/category/offers-earnings" },
+  title = "Keep exploring",
+  description = "Discover more AI tools, tutorials, and automation workflows built for modern creators.",
+  primary = { label: "Browse AI Tools", to: "/category/ai-tools" },
+  secondary = { label: "Latest Tutorials", to: "/category/tutorials" },
 }: {
   title?: string;
   description?: string;

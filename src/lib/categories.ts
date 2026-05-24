@@ -7,46 +7,32 @@ export type CategoryMeta = {
 
 export const CATEGORIES: CategoryMeta[] = [
   {
-    slug: "start-here",
-    name: "Start Here",
-    short: "Beginner foundations",
+    slug: "ai-tools",
+    name: "AI Tools",
+    short: "The modern AI stack",
     description:
-      "Beginner guides, affiliate and CPA basics, key terminology, and setup checklists. Build a clear mental model before you spend a single dollar on traffic.",
+      "In-depth reviews, comparisons, and roundups of the best AI tools, browser extensions, and free utilities for creators, students, freelancers, and remote teams.",
   },
   {
-    slug: "offers-earnings",
-    name: "Offers & Earnings",
-    short: "Pick offers that actually pay",
+    slug: "tutorials",
+    name: "Tutorials",
+    short: "Hands-on, step by step",
     description:
-      "How to evaluate offers, understand EPC and payout models, choose networks, and judge real earning potential without falling for hype.",
+      "Practical, step-by-step tutorials on ChatGPT, Claude, Gemini, Notion AI, prompt engineering, and the AI workflows powering modern knowledge work.",
   },
   {
-    slug: "tracking",
-    name: "Tracking & Attribution",
-    short: "See what's really happening",
+    slug: "automation",
+    name: "Automation",
+    short: "Automate the busywork",
     description:
-      "Tracking basics, UTM parameters, postback tracking, attribution issues, and how to read campaign data without fooling yourself.",
+      "How to automate content, social media, and operations with AI and no-code tools — from workflow blueprints to integrations that save hours every week.",
   },
   {
-    slug: "funnels-conversion",
-    name: "Funnels & Conversion",
-    short: "Turn clicks into customers",
+    slug: "productivity",
+    name: "Productivity",
+    short: "Work smarter, not longer",
     description:
-      "Landing pages, funnels, traffic alignment, trust signals, and the conversion mechanics that turn clicks into customers.",
-  },
-  {
-    slug: "seo-compliance",
-    name: "Trust, SEO & Compliance",
-    short: "Built to last and stay approved",
-    description:
-      "Editorial trust, SEO for monetized sites, affiliate disclosures, ad-friendly content, and the standards that keep a site approved and indexed long term.",
-  },
-  {
-    slug: "tools-resources",
-    name: "Tools & Resources",
-    short: "The stack behind the system",
-    description:
-      "Honest tool reviews, comparison guides, and recommended stacks across tracking, SEO, landing pages, email, analytics, and content workflow — chosen for builders who care about sustainable results.",
+      "Productivity systems, focus tools, time management, and remote-work playbooks designed for digital professionals who want to ship more with less friction.",
   },
 ];
 
