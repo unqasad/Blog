@@ -1,21 +1,13 @@
-// Autonomous editorial writer for Affiliate Compass.
+// Autonomous editorial writer for AI Compass.
 // Runs on a schedule (every 12 hours) via pg_cron + pg_net, or can be invoked
 // manually by an admin from the dashboard.
 //
 // Pipeline:
-//   1. Load existing post titles + affiliate-link inventory + recent log
+//   1. Load existing post titles + recent log
 //   2. Stage A — research: ask the AI to propose 5 fresh topic candidates
-//      scored on relevance / intent / monetization, then pick the best one
-//      (skipping tool/comparison/review topics if the involved tool has no
-//      stored affiliate link)
+//      scored on relevance / intent / usefulness, then pick the best one
 //   3. Stage B — draft: generate a full publication-ready article
 //   4. Insert as draft (never published) and write to generation_log
-//
-// Authentication:
-//   - Cron calls with the project anon JWT (verify_jwt = true)
-//   - Manual admin invocations from the dashboard also pass through; the
-//     edge function additionally enforces an admin role check when the
-//     caller is a real user (source: 'manual')
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
@@ -28,12 +20,10 @@ const corsHeaders = {
 const GENERIC_ERROR = "Something went wrong. Please try again.";
 
 const CATEGORIES = [
-  { slug: "start-here", name: "Start Here" },
-  { slug: "offers-earnings", name: "Offers & Earnings" },
-  { slug: "tracking", name: "Tracking & Attribution" },
-  { slug: "funnels-conversion", name: "Funnels & Conversion" },
-  { slug: "seo-compliance", name: "Trust, SEO & Compliance" },
-  { slug: "tools-resources", name: "Tools & Resources" },
+  { slug: "ai-tools", name: "AI Tools" },
+  { slug: "tutorials", name: "Tutorials" },
+  { slug: "automation", name: "Automation" },
+  { slug: "productivity", name: "Productivity" },
 ] as const;
 
 // ---------- AI tool schemas ----------
@@ -43,7 +33,7 @@ const RESEARCH_TOOL = {
   function: {
     name: "propose_topics",
     description:
-      "Propose 5 fresh blog topic candidates for Affiliate Compass and pick the best one.",
+      "Propose 5 fresh blog topic candidates for AI Compass and pick the best one.",
     parameters: {
       type: "object",
       properties: {
@@ -113,7 +103,7 @@ const DRAFT_TOOL = {
   type: "function",
   function: {
     name: "create_post",
-    description: "Create a publication-ready blog draft for Affiliate Compass.",
+    description: "Create a publication-ready blog draft for AI Compass.",
     parameters: {
       type: "object",
       properties: {
@@ -177,7 +167,7 @@ const DRAFT_TOOL = {
             type: "object",
             properties: {
               anchor_text: { type: "string" },
-              target_slug: { type: "string", description: "Slug of an existing post on Affiliate Compass." },
+              target_slug: { type: "string", description: "Slug of an existing post on AI Compass." },
             },
             required: ["anchor_text", "target_slug"],
             additionalProperties: false,
@@ -208,42 +198,42 @@ const DRAFT_TOOL = {
 
 // ---------- Prompts ----------
 
-const RESEARCH_SYSTEM = `You are the senior SEO strategist for "Affiliate Compass", a no-hype publication on affiliate marketing, CPA marketing, offer selection, tracking & attribution, funnels & conversion, trust/SEO/compliance, and the tools that power these systems.
+const RESEARCH_SYSTEM = `You are the senior SEO strategist for "AI Compass", a modern, no-hype publication on AI tools, hands-on tutorials, automation, and productivity workflows for creators, freelancers, students, and remote professionals.
 
 Your job in this step: propose 5 fresh blog topic candidates that fit the brief and pick the best one.
 
 Selection rules:
 - Topics must be practical, evergreen-leaning, problem-solving, and ad-friendly.
-- Reflect real demand on Google (autosuggest, People Also Ask, related searches, common forum/community questions). Use what you know about how affiliate/CPA marketers actually search.
+- Cover the modern AI + productivity stack: ChatGPT, Claude, Gemini, Notion AI, Perplexity, browser AI extensions, no-code automation (Zapier/Make/n8n), prompt engineering, AI for blogging, automation workflows, focus tools, time management, and remote-work efficiency.
+- Reflect real demand on Google (autosuggest, People Also Ask, related searches, common community questions).
 - Strong long-tail or middle-tail keywords beat vague broad ones.
 - Avoid hype, fake urgency, fabricated numbers, or "get rich quick" framing.
 - Avoid duplicating or paraphrasing any topic from the avoid list.
-- Prefer topic diversity across categories over time — if the most recent drafts are all from one category, lean toward another.
-- A "tool/comparison/review" topic is only allowed when EVERY required tool already exists in the affiliate-link inventory provided. If even one required tool is missing, mark mentions_tools=true with the missing tools but DO NOT recommend that candidate.
+- Prefer topic diversity across the 4 categories over time — if the most recent drafts cluster in one category, lean toward another.
+- For tool comparison/review topics, only recommend tools you can describe accurately from general public knowledge; never fabricate features, pricing, or screenshots.
 
 Score each candidate 1–10 on:
-- relevance_score: fit with Affiliate Compass's niche
+- relevance_score: fit with AI Compass's niche
 - trend_score: ongoing search interest / freshness
 - usefulness_score: how clearly it solves a real problem
-- monetization_score: ad/affiliate friendliness
+- monetization_score: ad/affiliate friendliness (informational + commercial intent)
 
 Then pick recommended_index = the strongest candidate that complies with the rules.
 
 Always call the propose_topics tool exactly once.`;
 
-const DRAFT_SYSTEM = `You are the senior editor for Affiliate Compass.
+const DRAFT_SYSTEM = `You are the senior editor for AI Compass — a modern publication on AI tools, automation, and productivity.
 
 Editorial rules:
-- Practical, calm, professional tone. No hype, no fake urgency, no fabricated stats, quotes, screenshots, testimonials, or income claims.
+- Modern, professional, calm, tech-focused tone. No hype, no fake urgency, no fabricated stats, screenshots, testimonials, or income claims.
 - People-first content with strong on-page SEO structure.
-- Useful for beginners, credible for intermediate readers.
+- Useful for creators, freelancers, students, and remote professionals.
 - Use <h2> for main sections, <h3> for subsections, short paragraphs, bullets, and an occasional callout.
-- Include practical examples, common mistakes, and a closing CTA paragraph.
+- Include practical examples, concrete steps, common mistakes, and a closing CTA paragraph.
 - 1400–2000 words.
-- Never invent product names, links, or numbers.
+- Never invent product names, links, prices, or feature lists. Only describe AI tools based on their well-known public functionality.
 - For internal_link_suggestions, only reference target_slug values from the provided existing-posts list.
-- For tool/software mentions in non-tools articles, only use the official homepage URL via <a href="..."> unless an affiliate URL is explicitly provided in the affiliate inventory.
-- For tool/comparison/review articles, only mention tools that appear in the affiliate inventory provided, and use their affiliate_url for links.
+- For tool mentions, link to the official homepage URL unless a verified URL is provided.
 
 Always call the create_post tool exactly once with a complete, publication-ready draft.`;
 
@@ -298,31 +288,19 @@ async function callAI(model: string, body: Record<string, unknown>): Promise<Res
 function pickBestEligibleCandidate(
   candidates: Candidate[],
   recommendedIndex: number,
-  affiliateSlugs: Set<string>,
+  _affiliateSlugs: Set<string>,
 ): { chosen: Candidate | null; reason: string } {
-  const isEligible = (c: Candidate) => {
-    if (!c.mentions_tools) return true;
-    if (!c.required_tools || c.required_tools.length === 0) return true;
-    return c.required_tools.every((slug) => affiliateSlugs.has(slug.toLowerCase().trim()));
-  };
-
+  // For AI Compass, tool reviews don't require an affiliate inventory.
+  // The drafter links to official homepages when no verified URL exists.
   const recommended = candidates[recommendedIndex];
-  if (recommended && isEligible(recommended)) {
+  if (recommended) {
     return { chosen: recommended, reason: "recommended-eligible" };
   }
-
-  const sorted = [...candidates]
-    .map((c, i) => ({ c, i }))
-    .filter(({ c }) => isEligible(c))
-    .sort((a, b) => b.c.total_score - a.c.total_score);
-
+  const sorted = [...candidates].sort((a, b) => b.total_score - a.total_score);
   if (sorted.length === 0) {
-    return {
-      chosen: null,
-      reason: "All candidates required tools without affiliate links on file.",
-    };
+    return { chosen: null, reason: "No candidates returned." };
   }
-  return { chosen: sorted[0].c, reason: "fallback-best-eligible" };
+  return { chosen: sorted[0], reason: "fallback-best-eligible" };
 }
 
 // ---------- Main handler ----------
