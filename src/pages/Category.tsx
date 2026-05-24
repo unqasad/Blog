@@ -37,7 +37,7 @@ const Category = () => {
   return (
     <SiteLayout>
       <Seo
-        title={`${meta.name} — Affiliate Compass`}
+        title={`${meta.name} — AI Compass`}
         description={meta.description}
         canonicalPath={`/category/${meta.slug}`}
       />

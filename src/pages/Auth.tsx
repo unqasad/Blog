@@ -48,7 +48,7 @@ const Auth = () => {
 
   return (
     <SiteLayout>
-      <Seo title="Sign In — Affiliate Compass" description="Editor sign-in for Affiliate Compass." canonicalPath="/auth" />
+      <Seo title="Sign In — AI Compass" description="Editor sign-in for AI Compass." canonicalPath="/auth" />
       <div className="container max-w-md py-16">
         <h1 className="font-serif text-3xl tracking-tight">{mode === "signin" ? "Sign in" : "Create account"}</h1>
         <p className="mt-2 text-sm text-muted-foreground">Editorial team access only.</p>
