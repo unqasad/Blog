@@ -1,4 +1,4 @@
-// AI writer: generates one SEO-optimized affiliate-niche post and saves it as a DRAFT.
+// AI writer: generates one SEO-optimized AI/productivity post and saves it as a DRAFT.
 // Triggered manually from the admin panel (admin-only).
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
@@ -12,19 +12,17 @@ const corsHeaders = {
 const GENERIC_ERROR = "Something went wrong. Please try again.";
 
 const CATEGORIES = [
-  { slug: "start-here", name: "Start Here" },
-  { slug: "offers-earnings", name: "Offers & Earnings" },
-  { slug: "tracking", name: "Tracking & Attribution" },
-  { slug: "funnels-conversion", name: "Funnels & Conversion" },
-  { slug: "seo-compliance", name: "Trust, SEO & Compliance" },
-  { slug: "tools-resources", name: "Tools & Resources" },
+  { slug: "ai-tools", name: "AI Tools" },
+  { slug: "tutorials", name: "Tutorials" },
+  { slug: "automation", name: "Automation" },
+  { slug: "productivity", name: "Productivity" },
 ];
 
 const TOOL_SCHEMA = {
   type: "function",
   function: {
     name: "create_post",
-    description: "Create a single SEO-optimized blog post draft for the affiliate marketing niche.",
+    description: "Create a single SEO-optimized blog post draft for the AI + productivity niche.",
     parameters: {
       type: "object",
       properties: {
@@ -33,34 +31,18 @@ const TOOL_SCHEMA = {
         meta_title: { type: "string", description: "SEO meta title. <=60 chars." },
         meta_description: { type: "string", description: "SEO meta description. 140-160 chars." },
         excerpt: { type: "string", description: "1-2 sentence dek/summary. ~160-220 chars." },
-        category_slug: {
-          type: "string",
-          enum: CATEGORIES.map((c) => c.slug),
-        },
+        category_slug: { type: "string", enum: CATEGORIES.map((c) => c.slug) },
         primary_keyword: { type: "string" },
-        secondary_keywords: {
-          type: "array",
-          items: { type: "string" },
-          minItems: 3,
-          maxItems: 8,
-        },
+        secondary_keywords: { type: "array", items: { type: "string" }, minItems: 3, maxItems: 8 },
         read_minutes: { type: "integer", minimum: 5, maximum: 14 },
-        key_takeaways: {
-          type: "array",
-          items: { type: "string" },
-          minItems: 4,
-          maxItems: 7,
-        },
+        key_takeaways: { type: "array", items: { type: "string" }, minItems: 4, maxItems: 7 },
         faq: {
           type: "array",
           minItems: 3,
           maxItems: 5,
           items: {
             type: "object",
-            properties: {
-              q: { type: "string" },
-              a: { type: "string" },
-            },
+            properties: { q: { type: "string" }, a: { type: "string" } },
             required: ["q", "a"],
             additionalProperties: false,
           },
@@ -68,7 +50,7 @@ const TOOL_SCHEMA = {
         content: {
           type: "string",
           description:
-            "Full article body as semantic HTML. Use <h2>, <h3>, <p>, <ul>, <ol>, <li>, <blockquote>, <strong>, <em>, <a>. No <h1> (title is rendered separately). 1200-1800 words. No fabricated stats, no income claims, no hype. Include practical examples, common mistakes, and a strong conclusion.",
+            "Full article body as semantic HTML. Use <h2>, <h3>, <p>, <ul>, <ol>, <li>, <blockquote>, <strong>, <em>, <a>. No <h1>. 1200-1800 words. No fabricated stats, no income claims, no hype. Include practical examples, common mistakes, and a strong conclusion.",
         },
       },
       required: [
@@ -81,16 +63,15 @@ const TOOL_SCHEMA = {
   },
 };
 
-const SYSTEM_PROMPT = `You are a senior SEO editor for "Affiliate Compass", a no-hype publication about affiliate marketing, CPA marketing, offer selection, tracking, conversion optimization, traffic quality, and compliance.
+const SYSTEM_PROMPT = `You are a senior editor for "AI Compass", a modern publication on AI tools, hands-on tutorials, automation, and productivity for creators, freelancers, students, and remote professionals.
 
 Editorial rules:
-- Practical, calm, professional tone. No hype, no "get rich quick", no fake urgency, no fabricated earnings or stats.
+- Modern, professional, calm, tech-focused tone. No hype, no "get rich quick", no fake urgency, no fabricated stats.
 - People-first content with strong SEO structure.
 - Original, evergreen, problem-solving angle.
-- Content must be ad-friendly and suitable for monetization.
-- Prefer high-intent topics: troubleshooting, comparisons, frameworks, checklists, beginner mistakes.
-- Use <h2> and <h3> headings, short paragraphs, bullets, and the occasional callout.
-- Include affiliate disclosure guidance when relevant, but never invent product names or links.
+- Cover the modern AI stack (ChatGPT, Claude, Gemini, Notion AI, Perplexity), browser AI extensions, prompt engineering, AI for blogging, no-code automation, productivity systems, and remote-work workflows.
+- Use <h2> and <h3> headings, short paragraphs, bullets, and an occasional callout.
+- Never invent product names, links, prices, or feature lists.
 - Never duplicate or paraphrase an existing post topic from the avoid list.
 
 Always call the create_post tool exactly once with the full draft.`;
@@ -114,19 +95,16 @@ Deno.serve(async (req) => {
     const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     if (!LOVABLE_API_KEY || !SUPABASE_URL || !SERVICE_KEY || !SUPABASE_ANON_KEY) {
       console.error("ai-writer: missing required environment variables");
-      return new Response(
-        JSON.stringify({ error: GENERIC_ERROR }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return new Response(JSON.stringify({ error: GENERIC_ERROR }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
-    // --- AuthN: require a valid caller JWT ---
     const authHeader = req.headers.get("Authorization") ?? "";
     if (!authHeader.startsWith("Bearer ")) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
     const token = authHeader.replace("Bearer ", "");
 
@@ -135,23 +113,20 @@ Deno.serve(async (req) => {
     });
     const { data: userData, error: userErr } = await userClient.auth.getUser(token);
     if (userErr || !userData?.user) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
-    // --- AuthZ: require admin role ---
     const adminClient = createClient(SUPABASE_URL, SERVICE_KEY);
     const { data: isAdmin, error: roleErr } = await adminClient.rpc("has_role", {
       _user_id: userData.user.id,
       _role: "admin",
     });
     if (roleErr || !isAdmin) {
-      return new Response(
-        JSON.stringify({ error: "Forbidden" }),
-        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const existing = await getExistingTopics(SUPABASE_URL, SERVICE_KEY);
@@ -159,19 +134,19 @@ Deno.serve(async (req) => {
       ? `\n\nAvoid these existing topics (pick a different angle):\n${existing.join("\n")}`
       : "";
 
-    const userPrompt = `Generate ONE new draft post for Affiliate Compass.
+    const userPrompt = `Generate ONE new draft post for AI Compass.
 
-Pick a fresh, high-intent topic from the niche (affiliate/CPA marketing, offer selection, tracking & attribution, conversion optimization, traffic & funnels, compliance/SEO/monetization).
+Pick a fresh, high-intent topic from the niche (AI tools, tutorials, automation, productivity).
 
 Examples of strong angles (do not copy verbatim):
-- Why your CPA campaign gets clicks but no leads
-- How to read EPC the right way
-- Postback vs pixel tracking explained for beginners
-- Pre-lander frameworks that build trust without hype
-- Audit checklist for an underperforming affiliate landing page
-- How to spot red flags in a CPA network
-- Mobile conversion fixes most beginners miss
-- SEO content clusters for affiliate blogs
+- Best AI tools for students in 2026
+- How to use ChatGPT for blogging end to end
+- Notion AI workflow for content creators
+- Prompt engineering basics for beginners
+- Automate your social media with no-code tools
+- Best browser AI extensions for research
+- A weekly productivity system for freelancers
+- Focus tools for deep work in a remote job
 
 Then call the create_post tool with a complete, publication-ready draft.${avoidList}`;
 
@@ -196,35 +171,30 @@ Then call the create_post tool with a complete, publication-ready draft.${avoidL
       const txt = await aiRes.text();
       console.error("AI gateway error:", aiRes.status, txt);
       if (aiRes.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "Rate limited. Try again shortly." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-        );
+        return new Response(JSON.stringify({ error: "Rate limited. Try again shortly." }), {
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
       if (aiRes.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "AI credits exhausted. Add funds in Settings → Workspace → Usage." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-        );
+        return new Response(JSON.stringify({ error: "AI credits exhausted. Add funds in Settings → Workspace → Usage." }), {
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
-      return new Response(
-        JSON.stringify({ error: GENERIC_ERROR }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return new Response(JSON.stringify({ error: GENERIC_ERROR }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const aiJson = await aiRes.json();
     const toolCall = aiJson?.choices?.[0]?.message?.tool_calls?.[0];
     if (!toolCall?.function?.arguments) {
       console.error("ai-writer: AI did not return a tool call", JSON.stringify(aiJson).slice(0, 500));
-      return new Response(
-        JSON.stringify({ error: GENERIC_ERROR }),
-        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return new Response(JSON.stringify({ error: GENERIC_ERROR }), {
+        status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
     const draft = JSON.parse(toolCall.function.arguments);
 
-    // Ensure unique slug
     let finalSlug = draft.slug;
     const slugCheck = await fetch(
       `${SUPABASE_URL}/rest/v1/posts?select=slug&slug=eq.${encodeURIComponent(finalSlug)}`,
@@ -265,22 +235,19 @@ Then call the create_post tool with a complete, publication-ready draft.${avoidL
     if (!insertRes.ok) {
       const txt = await insertRes.text();
       console.error("ai-writer insert error:", insertRes.status, txt);
-      return new Response(
-        JSON.stringify({ error: GENERIC_ERROR }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      return new Response(JSON.stringify({ error: GENERIC_ERROR }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const inserted = await insertRes.json();
-    return new Response(
-      JSON.stringify({ ok: true, post: inserted?.[0] ?? null }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
-    );
+    return new Response(JSON.stringify({ ok: true, post: inserted?.[0] ?? null }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (e) {
     console.error("ai-writer error:", e);
-    return new Response(
-      JSON.stringify({ error: GENERIC_ERROR }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-    );
+    return new Response(JSON.stringify({ error: GENERIC_ERROR }), {
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });
