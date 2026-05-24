@@ -93,7 +93,7 @@ const Admin = () => {
     content: "",
     meta_title: "",
     meta_description: "",
-    category_slug: "start-here",
+    category_slug: "ai-tools",
     read_minutes: 6,
   });
 
@@ -356,7 +356,7 @@ VALUES ('YOUR_USER_ID', 'admin');`}
   return (
     <SiteLayout>
       <Seo
-        title="Admin — Affiliate Compass"
+        title="Admin — AI Compass"
         description="Editorial dashboard."
         canonicalPath="/admin"
       />

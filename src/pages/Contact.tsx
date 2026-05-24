@@ -73,7 +73,7 @@ const Contact = () => {
   return (
     <StaticPage
       title="Contact"
-      description="Get in touch with the Affiliate Compass editorial team for corrections, reader questions, or partnership inquiries."
+      description="Get in touch with the AI Compass editorial team for corrections, reader questions, or partnership inquiries."
       path="/contact"
     >
       <p className="lead text-lg leading-relaxed text-foreground">

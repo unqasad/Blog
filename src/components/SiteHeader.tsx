@@ -10,17 +10,16 @@ export const SiteHeader = () => {
             <Compass className="h-5 w-5" />
           </span>
           <span className="font-serif text-xl font-semibold tracking-tight">
-            Affiliate Compass
+            AI Compass
           </span>
         </Link>
 
         <nav aria-label="Primary" className="hidden md:flex items-center gap-6 text-sm">
-          <Link to="/category/start-here" className="text-muted-foreground hover:text-foreground transition">Start Here</Link>
-          <Link to="/category/offers-earnings" className="text-muted-foreground hover:text-foreground transition">Offers & Earnings</Link>
-          <Link to="/category/tracking" className="text-muted-foreground hover:text-foreground transition">Tracking</Link>
-          <Link to="/category/funnels-conversion" className="text-muted-foreground hover:text-foreground transition">Funnels & Conversion</Link>
-          <Link to="/category/seo-compliance" className="text-muted-foreground hover:text-foreground transition">Trust, SEO & Compliance</Link>
-          <Link to="/category/tools-resources" className="text-muted-foreground hover:text-foreground transition">Tools</Link>
+          <Link to="/" className="text-muted-foreground hover:text-foreground transition">Home</Link>
+          <Link to="/category/ai-tools" className="text-muted-foreground hover:text-foreground transition">AI Tools</Link>
+          <Link to="/category/tutorials" className="text-muted-foreground hover:text-foreground transition">Tutorials</Link>
+          <Link to="/category/automation" className="text-muted-foreground hover:text-foreground transition">Automation</Link>
+          <Link to="/category/productivity" className="text-muted-foreground hover:text-foreground transition">Productivity</Link>
         </nav>
 
         <Link

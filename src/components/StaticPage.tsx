@@ -14,7 +14,7 @@ export const StaticPage = ({
   children: ReactNode;
 }) => (
   <SiteLayout>
-    <Seo title={`${title} — Affiliate Compass`} description={description} canonicalPath={path} />
+    <Seo title={`${title} — AI Compass`} description={description} canonicalPath={path} />
     <article className="container max-w-3xl py-12 md:py-16">
       <h1 className="font-serif text-4xl md:text-5xl tracking-tight">{title}</h1>
       <div className="prose-article mt-8">{children}</div>
