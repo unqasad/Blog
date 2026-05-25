@@ -45,52 +45,63 @@ const Index = () => {
         }}
       />
 
-      {/* Hero — centered */}
+      {/* Hero — two column, left text + illustration */}
       <section className="relative overflow-hidden bg-gradient-hero border-b border-border">
         <div className="absolute inset-0 -z-10 opacity-[0.35] [background-image:radial-gradient(hsl(var(--primary)/0.08)_1px,transparent_1px)] [background-size:22px_22px]" />
-        <div className="container py-20 md:py-28 lg:py-32">
-          <div className="mx-auto max-w-3xl text-center animate-fade-up">
-            <p className="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-primary font-semibold">
-              <span className="h-px w-8 bg-primary/60" />
-              AI · Automation · Productivity
-              <span className="h-px w-8 bg-primary/60" />
-            </p>
-            <h1 className="mt-5 font-serif text-[2.5rem] sm:text-5xl lg:text-[4.25rem] tracking-tight leading-[1.04] text-balance">
-              Work smarter with{" "}
-              <span className="text-primary">AI and modern workflows</span>
-            </h1>
-            <p className="mt-6 mx-auto max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed text-pretty">
-              Practical tutorials, honest tool reviews, and automation playbooks for creators,
-              freelancers, students, and remote teams who want to ship more in less time.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-              <Link
-                to="/category/ai-tools"
-                className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-soft hover:bg-primary-glow transition"
-              >
-                Explore AI Tools <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                to="/category/tutorials"
-                className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-6 py-3 text-sm font-medium hover:border-primary/40 hover:text-primary transition"
-              >
-                Browse Tutorials
-              </Link>
+        <div className="container py-16 md:py-20 lg:py-24">
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
+            <div className="animate-fade-up">
+              <p className="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-primary font-semibold">
+                <span className="h-px w-8 bg-primary/60" />
+                AI · Automation · Productivity
+              </p>
+              <h1 className="mt-5 font-serif text-[2.5rem] sm:text-5xl lg:text-[4.25rem] tracking-tight leading-[1.04] text-balance">
+                Work smarter with{" "}
+                <span className="text-primary">AI and modern workflows</span>
+              </h1>
+              <p className="mt-6 max-w-xl text-lg md:text-xl text-muted-foreground leading-relaxed text-pretty">
+                Practical tutorials, honest tool reviews, and automation playbooks for creators,
+                freelancers, students, and remote teams who want to ship more in less time.
+              </p>
+              <div className="mt-9 flex flex-wrap items-center gap-3">
+                <Link
+                  to="/category/ai-tools"
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-soft hover:bg-primary-glow transition"
+                >
+                  Explore AI Tools <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  to="/category/tutorials"
+                  className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-6 py-3 text-sm font-medium hover:border-primary/40 hover:text-primary transition"
+                >
+                  Browse Tutorials
+                </Link>
+              </div>
+              <dl className="mt-10 grid grid-cols-3 gap-6 max-w-md border-t border-border pt-6">
+                <div>
+                  <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Focus</dt>
+                  <dd className="mt-1 font-serif text-base">Workflows</dd>
+                </div>
+                <div>
+                  <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Tone</dt>
+                  <dd className="mt-1 font-serif text-base">Practical</dd>
+                </div>
+                <div>
+                  <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Cadence</dt>
+                  <dd className="mt-1 font-serif text-base">Evergreen</dd>
+                </div>
+              </dl>
             </div>
-            <dl className="mt-12 grid grid-cols-3 gap-6 max-w-md mx-auto border-t border-border pt-6 text-center">
-              <div>
-                <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Focus</dt>
-                <dd className="mt-1 font-serif text-base">Workflows</dd>
-              </div>
-              <div>
-                <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Tone</dt>
-                <dd className="mt-1 font-serif text-base">Practical</dd>
-              </div>
-              <div>
-                <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Cadence</dt>
-                <dd className="mt-1 font-serif text-base">Evergreen</dd>
-              </div>
-            </dl>
+
+            <div className="relative animate-fade-up">
+              <div className="absolute -inset-6 -z-10 rounded-3xl bg-primary/5 blur-2xl" />
+              <img
+                src={heroImage}
+                alt="AI workflows and productivity dashboards illustration"
+                className="w-full h-auto rounded-2xl shadow-card"
+                loading="eager"
+              />
+            </div>
           </div>
         </div>
       </section>
