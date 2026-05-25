@@ -94,7 +94,7 @@ const Contact = () => {
         our editorial standards.
       </p>
 
-      <div className="not-prose mt-10">
+      <div id="contact-form" className="not-prose mt-10 scroll-mt-24">
         {success ? (
           <div className="rounded-xl border border-primary/30 bg-primary/5 p-6 flex items-start gap-4">
             <CheckCircle2 className="h-6 w-6 text-primary shrink-0 mt-0.5" />
