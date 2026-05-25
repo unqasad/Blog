@@ -5,16 +5,8 @@ import Seo from "@/components/Seo";
 import PostCard, { PostCardData } from "@/components/PostCard";
 import { CATEGORIES } from "@/lib/categories";
 import { Link } from "react-router-dom";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import heroImage from "@/assets/hero.jpg";
-
-const TRENDING_TOOLS = [
-  { name: "ChatGPT", tag: "Assistant" },
-  { name: "Claude", tag: "Long-form" },
-  { name: "Gemini", tag: "Multimodal" },
-  { name: "Notion AI", tag: "Workspace" },
-  { name: "Perplexity", tag: "Research" },
-];
 
 const Index = () => {
   const [posts, setPosts] = useState<PostCardData[]>([]);
@@ -53,24 +45,25 @@ const Index = () => {
         }}
       />
 
-      {/* Hero */}
+      {/* Hero — centered */}
       <section className="relative overflow-hidden bg-gradient-hero border-b border-border">
         <div className="absolute inset-0 -z-10 opacity-[0.35] [background-image:radial-gradient(hsl(var(--primary)/0.08)_1px,transparent_1px)] [background-size:22px_22px]" />
-        <div className="container py-20 md:py-28 lg:py-32 grid gap-14 md:gap-16 lg:grid-cols-12 items-center">
-          <div className="animate-fade-up lg:col-span-7">
-            <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-primary font-semibold">
+        <div className="container py-20 md:py-28 lg:py-32">
+          <div className="mx-auto max-w-3xl text-center animate-fade-up">
+            <p className="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-primary font-semibold">
               <span className="h-px w-8 bg-primary/60" />
               AI · Automation · Productivity
+              <span className="h-px w-8 bg-primary/60" />
             </p>
             <h1 className="mt-5 font-serif text-[2.5rem] sm:text-5xl lg:text-[4.25rem] tracking-tight leading-[1.04] text-balance">
               Work smarter with{" "}
               <span className="text-primary">AI and modern workflows</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg md:text-xl text-muted-foreground leading-relaxed text-pretty">
+            <p className="mt-6 mx-auto max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed text-pretty">
               Practical tutorials, honest tool reviews, and automation playbooks for creators,
               freelancers, students, and remote teams who want to ship more in less time.
             </p>
-            <div className="mt-9 flex flex-wrap items-center gap-3">
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
               <Link
                 to="/category/ai-tools"
                 className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-soft hover:bg-primary-glow transition"
@@ -84,7 +77,7 @@ const Index = () => {
                 Browse Tutorials
               </Link>
             </div>
-            <dl className="mt-12 grid grid-cols-3 gap-6 max-w-md border-t border-border pt-6">
+            <dl className="mt-12 grid grid-cols-3 gap-6 max-w-md mx-auto border-t border-border pt-6 text-center">
               <div>
                 <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Focus</dt>
                 <dd className="mt-1 font-serif text-base">Workflows</dd>
@@ -99,22 +92,33 @@ const Index = () => {
               </div>
             </dl>
           </div>
-          <div className="relative lg:col-span-5">
-            <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-primary/10 via-transparent to-transparent blur-2xl" />
-            <img
-              src={heroImage}
-              alt="Editorial illustration of an AI productivity workspace: assistant chat, automation flows, and a focus dashboard"
-              width={1600}
-              height={1280}
-              fetchPriority="high"
-              className="rounded-2xl shadow-card border border-border w-full h-auto"
-            />
+        </div>
+      </section>
+
+      {/* Featured / Latest */}
+      <section className="container py-16">
+        <div className="flex items-end justify-between mb-8">
+          <h2 className="font-serif text-3xl md:text-4xl tracking-tight">Featured articles</h2>
+          <Link to="/category/ai-tools" className="text-sm font-medium text-primary hover:text-primary-glow">
+            View all →
+          </Link>
+        </div>
+
+        {featured && (
+          <div className="mb-8">
+            <PostCard post={featured} featured />
           </div>
+        )}
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {rest.map((p) => (
+            <PostCard key={p.slug} post={p} />
+          ))}
         </div>
       </section>
 
       {/* Categories */}
-      <section className="container py-16">
+      <section className="container py-12 md:py-16">
         <div className="flex items-end justify-between mb-8">
           <h2 className="font-serif text-3xl md:text-4xl tracking-tight">Explore by topic</h2>
           <p className="hidden md:block text-sm text-muted-foreground max-w-md text-right">
@@ -145,50 +149,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured / Latest */}
-      <section className="container py-12 md:py-16">
-        <div className="flex items-end justify-between mb-8">
-          <h2 className="font-serif text-3xl md:text-4xl tracking-tight">Featured articles</h2>
-          <Link to="/category/ai-tools" className="text-sm font-medium text-primary hover:text-primary-glow">
-            View all →
-          </Link>
-        </div>
-
-        {featured && (
-          <div className="mb-8">
-            <PostCard post={featured} featured />
-          </div>
-        )}
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {rest.map((p) => (
-            <PostCard key={p.slug} post={p} />
-          ))}
-        </div>
-      </section>
-
-      {/* Trending AI Tools */}
-      <section className="container py-12 md:py-16">
-        <div className="flex items-end justify-between mb-8">
-          <h2 className="font-serif text-3xl md:text-4xl tracking-tight">Trending AI tools</h2>
-          <Link to="/category/ai-tools" className="text-sm font-medium text-primary hover:text-primary-glow">
-            All tools →
-          </Link>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          {TRENDING_TOOLS.map((t) => (
-            <div
-              key={t.name}
-              className="rounded-xl border border-border bg-card p-5 shadow-soft hover:shadow-card hover:-translate-y-0.5 transition"
-            >
-              <Sparkles className="h-5 w-5 text-primary" />
-              <p className="mt-3 font-serif text-lg tracking-tight">{t.name}</p>
-              <p className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">{t.tag}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Per-category strips */}
       {[
         { slug: "tutorials", title: "Latest tutorials", items: tutorials },
@@ -215,36 +175,6 @@ const Index = () => {
             </section>
           ),
       )}
-
-      {/* Newsletter CTA */}
-      <section className="container py-16">
-        <div className="rounded-2xl border border-border bg-gradient-hero p-8 md:p-12 shadow-soft text-center">
-          <p className="text-xs uppercase tracking-[0.22em] text-primary font-semibold">Newsletter</p>
-          <h2 className="mt-3 font-serif text-3xl md:text-4xl tracking-tight">
-            New AI workflows in your inbox
-          </h2>
-          <p className="mt-3 max-w-xl mx-auto text-muted-foreground">
-            One short email with the best new tools, tutorials, and automation playbooks. No spam.
-          </p>
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="mt-6 flex max-w-md mx-auto gap-2"
-          >
-            <input
-              type="email"
-              required
-              placeholder="you@example.com"
-              className="flex-1 rounded-md border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-            />
-            <button
-              type="submit"
-              className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary-glow transition"
-            >
-              Subscribe
-            </button>
-          </form>
-        </div>
-      </section>
     </SiteLayout>
   );
 };
