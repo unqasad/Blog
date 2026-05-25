@@ -17,9 +17,9 @@ export const SiteHeader = () => {
         <nav aria-label="Primary" className="hidden md:flex items-center gap-6 text-sm">
           <Link to="/" className="text-muted-foreground hover:text-foreground transition">Home</Link>
           <Link to="/category/ai-tools" className="text-muted-foreground hover:text-foreground transition">AI Tools</Link>
-          <Link to="/category/tutorials" className="text-muted-foreground hover:text-foreground transition">Tutorials</Link>
           <Link to="/category/automation" className="text-muted-foreground hover:text-foreground transition">Automation</Link>
           <Link to="/category/productivity" className="text-muted-foreground hover:text-foreground transition">Productivity</Link>
+          <Link to="/category/tutorials" className="text-muted-foreground hover:text-foreground transition">Tutorials</Link>
         </nav>
 
         <Link
