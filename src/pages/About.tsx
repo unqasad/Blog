@@ -19,7 +19,7 @@ const About = () => (
 
     <h2>What we cover</h2>
     <ul>
-      <li>AI tools, free utilities, and the best browser extensions</li>
+      <li>Educational content, guides, tutorials, and honest reviews of AI tools, free utilities, and the best browser extensions</li>
       <li>Hands-on tutorials for ChatGPT, Claude, Gemini, and Notion AI</li>
       <li>Prompt engineering, AI workflows, and content automation</li>
       <li>No-code automation for creators, teams, and solo operators</li>
@@ -29,7 +29,7 @@ const About = () => (
 
     <h2>Our editorial standards</h2>
     <ul>
-      <li>We test tools and workflows before recommending them.</li>
+      <li>Every tool and workflow we recommend is one we've personally used in real projects, not just skimmed from a landing page.</li>
       <li>We don't publish hype, fake productivity claims, or "secret method" framing.</li>
       <li>We explain tradeoffs, limitations, and who a tool is and isn't for.</li>
       <li>We prefer evergreen, problem-solving guides over breaking-news churn.</li>
@@ -38,7 +38,7 @@ const About = () => (
 
     <p>
       Spotted something outdated or unclear?{" "}
-      <a href="/contact">Get in touch</a> and we'll review it.
+      <a href="/contact#contact-form">Get in touch</a> and we'll review it.
     </p>
   </StaticPage>
 );
