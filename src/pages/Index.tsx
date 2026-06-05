@@ -32,8 +32,8 @@ const Index = () => {
   return (
     <SiteLayout>
       <Seo
-        title="AI Compass — AI Tools, Automation & Productivity for Modern Creators"
-        description="A modern publication on AI tools, tutorials, automation, and productivity workflows for creators, freelancers, students, and digital professionals."
+        title="AI Compass — AI Tools, Comparisons, Automation & Productivity for Modern Creators"
+        description="A modern publication on AI tools, comparisons, automation, and productivity workflows for creators, freelancers, students, and digital professionals."
         canonicalPath="/"
         image={heroImage}
         jsonLd={{
