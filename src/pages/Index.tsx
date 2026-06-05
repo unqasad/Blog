@@ -41,7 +41,7 @@ const Index = () => {
           "@type": "WebSite",
           name: "AI Compass",
           description:
-            "AI tools, tutorials, automation, and productivity workflows for modern digital professionals.",
+            "AI tools, comparisons, automation, and productivity workflows for modern digital professionals.",
         }}
       />
 
