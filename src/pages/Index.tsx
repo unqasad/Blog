@@ -162,7 +162,7 @@ const Index = () => {
 
       {/* Per-category strips */}
       {[
-        { slug: "tutorials", title: "Latest tutorials", items: tutorials },
+        { slug: "comparisons", title: "Latest comparisons", items: comparisons },
         { slug: "automation", title: "Automation guides", items: automation },
         { slug: "productivity", title: "Productivity tips", items: productivity },
       ].map(
