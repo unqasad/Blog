@@ -60,7 +60,7 @@ const Index = () => {
                 <span className="text-primary">AI and modern workflows</span>
               </h1>
               <p className="mt-6 max-w-xl text-lg md:text-xl text-muted-foreground leading-relaxed text-pretty">
-                Practical tutorials, honest tool reviews, and automation playbooks for creators,
+                Practical comparisons, honest tool reviews, and automation playbooks for creators,
                 freelancers, students, and remote teams who want to ship more in less time.
               </p>
               <div className="mt-9 flex flex-wrap items-center gap-3">
