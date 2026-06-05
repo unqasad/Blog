@@ -19,8 +19,8 @@ const About = () => (
 
     <h2>What we cover</h2>
     <ul>
-      <li>Educational content, guides, tutorials, and honest reviews of AI tools, free utilities, and the best browser extensions</li>
-      <li>Hands-on tutorials for ChatGPT, Claude, Gemini, and Notion AI</li>
+      <li>Educational content, guides, comparisons, and honest reviews of AI tools, free utilities, and the best browser extensions</li>
+      <li>Hands-on comparisons for ChatGPT, Claude, Gemini, and Notion AI</li>
       <li>Prompt engineering, AI workflows, and content automation</li>
       <li>No-code automation for creators, teams, and solo operators</li>
       <li>Productivity systems, focus tools, and time-management playbooks</li>

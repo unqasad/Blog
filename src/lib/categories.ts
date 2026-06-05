@@ -14,11 +14,11 @@ export const CATEGORIES: CategoryMeta[] = [
       "In-depth reviews, comparisons, and roundups of the best AI tools, browser extensions, and free utilities for creators, students, freelancers, and remote teams.",
   },
   {
-    slug: "tutorials",
-    name: "Tutorials",
-    short: "Hands-on, step by step",
+    slug: "comparisons",
+    name: "Comparisons",
+    short: "Side-by-side reviews",
     description:
-      "Practical, step-by-step tutorials on ChatGPT, Claude, Gemini, Notion AI, prompt engineering, and the AI workflows powering modern knowledge work.",
+      "Head-to-head comparisons of the best AI tools, browser extensions, and free utilities — so you can choose the right tool for your workflow without the guesswork.",
   },
   {
     slug: "automation",

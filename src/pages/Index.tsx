@@ -25,15 +25,15 @@ const Index = () => {
   const rest = posts.slice(1);
 
   const bySlug = (slug: string) => posts.filter((p) => p.category_slug === slug).slice(0, 3);
-  const tutorials = bySlug("tutorials");
+  const comparisons = bySlug("comparisons");
   const automation = bySlug("automation");
   const productivity = bySlug("productivity");
 
   return (
     <SiteLayout>
       <Seo
-        title="AI Compass — AI Tools, Automation & Productivity for Modern Creators"
-        description="A modern publication on AI tools, tutorials, automation, and productivity workflows for creators, freelancers, students, and digital professionals."
+        title="AI Compass — AI Tools, Comparisons, Automation & Productivity for Modern Creators"
+        description="A modern publication on AI tools, comparisons, automation, and productivity workflows for creators, freelancers, students, and digital professionals."
         canonicalPath="/"
         image={heroImage}
         jsonLd={{
@@ -41,7 +41,7 @@ const Index = () => {
           "@type": "WebSite",
           name: "AI Compass",
           description:
-            "AI tools, tutorials, automation, and productivity workflows for modern digital professionals.",
+            "AI tools, comparisons, automation, and productivity workflows for modern digital professionals.",
         }}
       />
 
@@ -60,7 +60,7 @@ const Index = () => {
                 <span className="text-primary">AI and modern workflows</span>
               </h1>
               <p className="mt-6 max-w-xl text-lg md:text-xl text-muted-foreground leading-relaxed text-pretty">
-                Practical tutorials, honest tool reviews, and automation playbooks for creators,
+                Practical comparisons, honest tool reviews, and automation playbooks for creators,
                 freelancers, students, and remote teams who want to ship more in less time.
               </p>
               <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -71,10 +71,10 @@ const Index = () => {
                   Explore AI Tools <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  to="/category/tutorials"
+                  to="/category/comparisons"
                   className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-6 py-3 text-sm font-medium hover:border-primary/40 hover:text-primary transition"
                 >
-                  Browse Tutorials
+                  Browse Comparisons
                 </Link>
               </div>
               <dl className="mt-10 grid grid-cols-3 gap-6 max-w-md border-t border-border pt-6">
@@ -133,7 +133,7 @@ const Index = () => {
         <div className="flex items-end justify-between mb-8">
           <h2 className="font-serif text-3xl md:text-4xl tracking-tight">Explore by topic</h2>
           <p className="hidden md:block text-sm text-muted-foreground max-w-md text-right">
-            Four focused hubs covering AI tools, hands-on tutorials, automation, and productivity.
+            Four focused hubs covering AI tools, hands-on comparisons, automation, and productivity.
           </p>
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-2">
@@ -162,7 +162,7 @@ const Index = () => {
 
       {/* Per-category strips */}
       {[
-        { slug: "tutorials", title: "Latest tutorials", items: tutorials },
+        { slug: "comparisons", title: "Latest comparisons", items: comparisons },
         { slug: "automation", title: "Automation guides", items: automation },
         { slug: "productivity", title: "Productivity tips", items: productivity },
       ].map(
