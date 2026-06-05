@@ -71,10 +71,10 @@ const Index = () => {
                   Explore AI Tools <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  to="/category/tutorials"
+                  to="/category/comparisons"
                   className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-6 py-3 text-sm font-medium hover:border-primary/40 hover:text-primary transition"
                 >
-                  Browse Tutorials
+                  Browse Comparisons
                 </Link>
               </div>
               <dl className="mt-10 grid grid-cols-3 gap-6 max-w-md border-t border-border pt-6">
