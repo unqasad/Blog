@@ -133,7 +133,7 @@ const Index = () => {
         <div className="flex items-end justify-between mb-8">
           <h2 className="font-serif text-3xl md:text-4xl tracking-tight">Explore by topic</h2>
           <p className="hidden md:block text-sm text-muted-foreground max-w-md text-right">
-            Four focused hubs covering AI tools, hands-on tutorials, automation, and productivity.
+            Four focused hubs covering AI tools, hands-on comparisons, automation, and productivity.
           </p>
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-2">
