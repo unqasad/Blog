@@ -25,7 +25,7 @@ const Index = () => {
   const rest = posts.slice(1);
 
   const bySlug = (slug: string) => posts.filter((p) => p.category_slug === slug).slice(0, 3);
-  const tutorials = bySlug("tutorials");
+  const comparisons = bySlug("comparisons");
   const automation = bySlug("automation");
   const productivity = bySlug("productivity");
 
