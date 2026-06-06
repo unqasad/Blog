@@ -3,19 +3,18 @@ import { CATEGORIES } from "@/lib/categories";
 
 export const SiteFooter = () => {
   return (
-    <footer className="mt-24 border-t border-border bg-secondary/40">
-      <div className="container py-14 grid gap-10 md:grid-cols-4">
-        <div className="md:col-span-2">
-          <p className="font-serif text-2xl tracking-tight">AI Compass</p>
-          <p className="mt-3 max-w-md text-sm text-muted-foreground leading-relaxed">
-            A modern publication on AI tools, automation, and productivity for creators,
-            freelancers, students, and digital professionals.
+    <footer className="mt-20 border-t border-border bg-secondary/40">
+      <div className="container py-8 grid gap-6 md:grid-cols-12 md:items-start">
+        <div className="md:col-span-5">
+          <p className="font-serif text-lg tracking-tight">AI Compass</p>
+          <p className="mt-1.5 max-w-md text-sm text-muted-foreground leading-relaxed">
+            A modern publication on AI tools, automation, and productivity.
           </p>
         </div>
 
-        <div>
-          <h4 className="font-serif text-base mb-3">Categories</h4>
-          <ul className="space-y-2 text-sm">
+        <nav aria-label="Categories" className="md:col-span-4">
+          <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Categories</h4>
+          <ul className="flex flex-wrap gap-x-4 gap-y-1.5 text-sm">
             {CATEGORIES.map((c) => (
               <li key={c.slug}>
                 <Link to={`/category/${c.slug}`} className="text-muted-foreground hover:text-foreground transition">
@@ -24,22 +23,21 @@ export const SiteFooter = () => {
               </li>
             ))}
           </ul>
-        </div>
+        </nav>
 
-        <div>
-          <h4 className="font-serif text-base mb-3">Site</h4>
-          <ul className="space-y-2 text-sm">
+        <nav aria-label="Site" className="md:col-span-3">
+          <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Site</h4>
+          <ul className="flex flex-wrap gap-x-4 gap-y-1.5 text-sm">
             <li><Link to="/about" className="text-muted-foreground hover:text-foreground">About</Link></li>
             <li><Link to="/contact" className="text-muted-foreground hover:text-foreground">Contact</Link></li>
-            <li><Link to="/disclaimer" className="text-muted-foreground hover:text-foreground">Disclaimer</Link></li>
-            <li><Link to="/privacy-policy" className="text-muted-foreground hover:text-foreground">Privacy Policy</Link></li>
-            <li><Link to="/terms" className="text-muted-foreground hover:text-foreground">Terms & Conditions</Link></li>
+            <li><Link to="/privacy-policy" className="text-muted-foreground hover:text-foreground">Privacy</Link></li>
+            <li><Link to="/terms" className="text-muted-foreground hover:text-foreground">Terms</Link></li>
           </ul>
-        </div>
+        </nav>
       </div>
 
       <div className="border-t border-border">
-        <div className="container py-6 text-xs text-muted-foreground">
+        <div className="container py-3 text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} AI Compass. All rights reserved.</p>
         </div>
       </div>

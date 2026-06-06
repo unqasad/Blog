@@ -15,9 +15,9 @@ export const StaticPage = ({
 }) => (
   <SiteLayout>
     <Seo title={`${title} — AI Compass`} description={description} canonicalPath={path} />
-    <article className="container max-w-3xl py-12 md:py-16">
-      <h1 className="font-serif text-4xl md:text-5xl tracking-tight">{title}</h1>
-      <div className="prose-article mt-8">{children}</div>
+    <article className="container max-w-3xl py-10 md:py-14">
+      <h1 className="font-serif text-4xl md:text-5xl font-semibold tracking-tight">{title}</h1>
+      <div className="prose-article mt-6">{children}</div>
     </article>
   </SiteLayout>
 );

@@ -11,28 +11,35 @@ export const CATEGORIES: CategoryMeta[] = [
     name: "AI Tools",
     short: "The modern AI stack",
     description:
-      "In-depth reviews, comparisons, and roundups of the best AI tools, browser extensions, and free utilities for creators, students, freelancers, and remote teams.",
+      "Reviews, comparisons, and roundups of the AI tools, browser extensions, and free utilities worth your time.",
   },
   {
-    slug: "comparisons",
-    name: "Comparisons",
-    short: "Side-by-side reviews",
+    slug: "tutorials",
+    name: "Tutorials",
+    short: "Step-by-step guides",
     description:
-      "Head-to-head comparisons of the best AI tools, browser extensions, and free utilities — so you can choose the right tool for your workflow without the guesswork.",
+      "Practical, hands-on tutorials for getting real work done with AI — from prompts to full workflows.",
   },
   {
     slug: "automation",
     name: "Automation",
     short: "Automate the busywork",
     description:
-      "How to automate content, social media, and operations with AI and no-code tools — from workflow blueprints to integrations that save hours every week.",
+      "Workflow blueprints and no-code automations for content, social, and operations.",
   },
   {
     slug: "productivity",
     name: "Productivity",
     short: "Work smarter, not longer",
     description:
-      "Productivity systems, focus tools, time management, and remote-work playbooks designed for digital professionals who want to ship more with less friction.",
+      "Focus systems, time management, and remote-work playbooks for digital professionals.",
+  },
+  {
+    slug: "comparisons",
+    name: "Comparisons",
+    short: "Side-by-side reviews",
+    description:
+      "Head-to-head comparisons so you can pick the right tool without the guesswork.",
   },
 ];
 

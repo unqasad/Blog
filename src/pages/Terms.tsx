@@ -2,22 +2,30 @@ import StaticPage from "@/components/StaticPage";
 
 const Terms = () => (
   <StaticPage
-    title="Terms and Conditions"
-    description="The terms and conditions that govern your use of AI Compass."
+    title="Terms"
+    description="The terms that apply when you use AI Compass."
     path="/terms"
   >
     <p><em>Last updated: {new Date().toLocaleDateString()}</em></p>
-    <p>By accessing AI Compass you agree to these Terms and Conditions. If you do not agree, please do not use the site.</p>
-    <h2>Use of content</h2>
-    <p>All content is for informational and educational purposes. You may share short excerpts with attribution and a link to the original article. You may not republish full articles without written permission.</p>
+    <p>By using AI Compass, you agree to these terms. If you don't, please don't use the site.</p>
+
+    <h2>Using our content</h2>
+    <p>Articles are for informational and educational use. Short excerpts with attribution and a link back are fine. Don't republish full articles without permission.</p>
+
     <h2>No professional advice</h2>
-    <p>Articles on this site are general information. They are not financial, legal, or professional advice. Consult a qualified professional for your specific situation.</p>
-    <h2>Third-party content</h2>
-    <p>We may link to third-party websites and services. We are not responsible for their content, accuracy, or practices.</p>
-    <h2>Limitation of liability</h2>
-    <p>To the maximum extent permitted by law, AI Compass is not liable for any damages arising from your use of the site or reliance on its content.</p>
+    <p>Our content is general information, not financial, legal, or other professional advice. For your specific situation, talk to a qualified professional.</p>
+
+    <h2>Results aren't guaranteed</h2>
+    <p>AI tools and workflows change quickly. We can't promise specific productivity, business, or income outcomes from anything you read here.</p>
+
+    <h2>Third-party tools</h2>
+    <p>Mentioning a tool isn't an endorsement of every part of it. Review the provider's own terms and privacy practices before using it.</p>
+
+    <h2>Liability</h2>
+    <p>To the maximum extent permitted by law, AI Compass isn't liable for any damages from your use of the site or its content.</p>
+
     <h2>Changes</h2>
-    <p>We may update these terms at any time. Continued use of the site means you accept the updated terms.</p>
+    <p>We may update these terms. Continued use of the site means you accept the current version.</p>
   </StaticPage>
 );
 export default Terms;
