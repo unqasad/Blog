@@ -10,21 +10,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { CheckCircle2, Loader2 } from "lucide-react";
 
 const contactSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, "Please enter your name")
-    .max(120, "Name must be under 120 characters"),
-  email: z
-    .string()
-    .trim()
-    .email("Please enter a valid email address")
-    .max(255, "Email must be under 255 characters"),
-  message: z
-    .string()
-    .trim()
-    .min(5, "Message is too short")
-    .max(5000, "Message must be under 5000 characters"),
+  name: z.string().trim().min(1, "Please enter your name").max(120),
+  email: z.string().trim().email("Please enter a valid email address").max(255),
+  message: z.string().trim().min(5, "Message is too short").max(5000),
 });
 
 const Contact = () => {
@@ -59,8 +47,7 @@ const Contact = () => {
     if (error) {
       toast({
         title: "Could not send your message",
-        description:
-          "Something went wrong on our side. Please try again in a moment.",
+        description: "Something went wrong on our side. Please try again in a moment.",
         variant: "destructive",
       });
       return;
@@ -73,26 +60,18 @@ const Contact = () => {
   return (
     <StaticPage
       title="Contact"
-      description="Get in touch with the AI Compass editorial team for corrections, reader questions, or partnership inquiries."
+      description="Get in touch with AI Compass."
       path="/contact"
     >
       <p className="lead text-lg leading-relaxed text-foreground">
-        We read every message and prioritize corrections, thoughtful reader questions, and
-        legitimate editorial inquiries. Use the form below to reach the editorial team
-        privately — your details are stored securely and only the editorial team can see
-        them.
+        We'd love to hear from you. Use the form below for:
       </p>
-
-      <p>We typically respond to:</p>
       <ul>
-        <li>Corrections or factual concerns about a published article</li>
-        <li>Reader questions that may shape future articles</li>
-        <li>Editorial and partnership inquiries from credible brands</li>
+        <li>Reader questions</li>
+        <li>Corrections to a published article</li>
+        <li>Partnership inquiries</li>
+        <li>Feedback on what we should cover next</li>
       </ul>
-      <p>
-        We do not accept paid guest posts, link insertions, or sponsored reviews that bypass
-        our editorial standards.
-      </p>
 
       <div id="contact-form" className="not-prose mt-10 scroll-mt-24">
         {success ? (
@@ -101,8 +80,7 @@ const Contact = () => {
             <div>
               <p className="font-serif text-lg">Message received</p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Thanks for reaching out. We've stored your message and will reply directly
-                to the email you provided when an editor reviews it.
+                Thanks for reaching out — we'll reply directly to the email you provided.
               </p>
               <Button
                 variant="outline"
@@ -133,9 +111,7 @@ const Contact = () => {
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   aria-invalid={!!errors.name}
                 />
-                {errors.name && (
-                  <p className="text-xs text-destructive">{errors.name}</p>
-                )}
+                {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="contact-email">Email address</Label>
@@ -149,9 +125,7 @@ const Contact = () => {
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   aria-invalid={!!errors.email}
                 />
-                {errors.email && (
-                  <p className="text-xs text-destructive">{errors.email}</p>
-                )}
+                {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
               </div>
             </div>
             <div className="space-y-2">
@@ -163,21 +137,15 @@ const Contact = () => {
                 required
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
-                placeholder="Briefly tell us what you'd like to discuss."
+                placeholder="What's on your mind?"
                 aria-invalid={!!errors.message}
               />
-              {errors.message && (
-                <p className="text-xs text-destructive">{errors.message}</p>
-              )}
+              {errors.message && <p className="text-xs text-destructive">{errors.message}</p>}
               <p className="text-xs text-muted-foreground">
                 {form.message.trim().length} / 5000 characters
               </p>
             </div>
-            <div className="flex items-center justify-between gap-4 flex-wrap pt-2">
-              <p className="text-xs text-muted-foreground max-w-md">
-                By submitting, you agree your details will be stored privately so we can
-                reply. We do not share or sell contact information.
-              </p>
+            <div className="flex items-center justify-end gap-4 flex-wrap pt-2">
               <Button type="submit" disabled={submitting} className="gap-2">
                 {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
                 {submitting ? "Sending…" : "Send message"}

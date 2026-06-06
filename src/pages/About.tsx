@@ -2,38 +2,27 @@ import StaticPage from "@/components/StaticPage";
 
 const About = () => (
   <StaticPage
-    title="About AI Compass"
-    description="AI Compass is a modern publication helping creators, freelancers, students, and remote professionals get more done with AI tools, automation, and better workflows."
+    title="About"
+    description="AI Compass is an independent publication covering AI tools, tutorials, automation, and productivity for people who actually use this stuff at work."
     path="/about"
   >
     <p className="lead text-lg leading-relaxed text-foreground">
-      AI Compass is a modern publication on AI tools, automation, and productivity. We
-      help creators, freelancers, students, and digital professionals understand the
-      modern AI stack and turn it into real, repeatable workflows.
+      AI Compass is an independent publication about AI tools, tutorials, automation,
+      and productivity. We write for the people who actually use this software at work —
+      creators, freelancers, students, and small teams.
     </p>
     <p>
-      Our goal is clarity, not hype. We test, compare, and document what actually works —
-      so you can spend less time evaluating tools and more time shipping the work that
-      matters.
+      Our bias is toward clarity. We test the tools, document what works, flag what
+      doesn't, and skip the marketing language. If a workflow isn't worth your time,
+      we'll say so.
     </p>
 
-    <h2>What we cover</h2>
+    <h2>What you'll find here</h2>
     <ul>
-      <li>Educational content, guides, comparisons, and honest reviews of AI tools, free utilities, and the best browser extensions</li>
-      <li>Hands-on comparisons for ChatGPT, Claude, Gemini, and Notion AI</li>
-      <li>Prompt engineering, AI workflows, and content automation</li>
-      <li>No-code automation for creators, teams, and solo operators</li>
-      <li>Productivity systems, focus tools, and time-management playbooks</li>
-      <li>Remote work efficiency and digital workflow design</li>
-    </ul>
-
-    <h2>Our editorial standards</h2>
-    <ul>
-      <li>Every tool and workflow we recommend is one we've personally used in real projects, not just skimmed from a landing page.</li>
-      <li>We don't publish hype, fake productivity claims, or "secret method" framing.</li>
-      <li>We explain tradeoffs, limitations, and who a tool is and isn't for.</li>
-      <li>We prefer evergreen, problem-solving guides over breaking-news churn.</li>
-      <li>We update articles when tools change in ways that matter.</li>
+      <li>Honest reviews and head-to-head comparisons of AI tools</li>
+      <li>Step-by-step tutorials for real workflows, not toy demos</li>
+      <li>Automation playbooks for content, ops, and everyday busywork</li>
+      <li>Productivity systems that hold up outside the screenshot</li>
     </ul>
 
     <p>

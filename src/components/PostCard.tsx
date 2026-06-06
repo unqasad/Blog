@@ -47,15 +47,15 @@ export const PostCard = ({ post, featured = false }: { post: PostCardData; featu
           </Link>
         )}
         <h3
-          className={`mt-2 font-serif tracking-tight text-foreground ${
-            featured ? "text-2xl md:text-3xl" : "text-xl"
+          className={`mt-2 font-serif font-semibold tracking-tight text-foreground ${
+            featured ? "text-2xl md:text-3xl" : "text-[1.35rem] leading-snug"
           }`}
         >
           <Link to={`/blog/${post.slug}`} className="hover:text-primary transition-colors">
             {post.title}
           </Link>
         </h3>
-        <p className="mt-3 text-sm text-muted-foreground leading-relaxed line-clamp-3">
+        <p className="mt-3 text-sm text-muted-foreground leading-relaxed line-clamp-2">
           {post.excerpt}
         </p>
         <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">

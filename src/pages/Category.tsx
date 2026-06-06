@@ -41,17 +41,14 @@ const Category = () => {
         description={meta.description}
         canonicalPath={`/category/${meta.slug}`}
       />
-      <section className="bg-gradient-hero border-b border-border">
-        <div className="container py-12 md:py-16">
+      <section className="border-b border-border">
+        <div className="container pt-5 pb-4">
           <Breadcrumbs items={[{ label: "Home", to: "/" }, { label: meta.name }]} />
-          <h1 className="mt-4 font-serif text-4xl md:text-5xl tracking-tight">{meta.name}</h1>
-          <p className="mt-3 max-w-2xl text-lg text-muted-foreground leading-relaxed">
-            {meta.description}
-          </p>
+          <h1 className="mt-2 font-serif text-2xl md:text-3xl tracking-tight">{meta.name}</h1>
         </div>
       </section>
 
-      <section className="container py-12">
+      <section className="container py-8">
         {posts.length === 0 ? (
           <p className="text-muted-foreground">No articles yet in this category. New posts are added regularly.</p>
         ) : (

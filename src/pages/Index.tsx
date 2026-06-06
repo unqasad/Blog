@@ -29,11 +29,13 @@ const Index = () => {
   const automation = bySlug("automation");
   const productivity = bySlug("productivity");
 
+  const coreAreas = ["AI Tools", "Tutorials", "Automation", "Productivity", "Comparisons"];
+
   return (
     <SiteLayout>
       <Seo
-        title="AI Compass — AI Tools, Comparisons, Automation & Productivity for Modern Creators"
-        description="A modern publication on AI tools, comparisons, automation, and productivity workflows for creators, freelancers, students, and digital professionals."
+        title="AI Compass — AI Tools, Tutorials, Automation & Productivity"
+        description="An independent publication covering the AI tools, tutorials, and workflows that actually move work forward."
         canonicalPath="/"
         image={heroImage}
         jsonLd={{
@@ -41,27 +43,27 @@ const Index = () => {
           "@type": "WebSite",
           name: "AI Compass",
           description:
-            "AI tools, comparisons, automation, and productivity workflows for modern digital professionals.",
+            "AI tools, tutorials, automation, and productivity coverage for modern professionals.",
         }}
       />
 
-      {/* Hero — two column, left text + illustration */}
+      {/* Hero — text aligned top, illustration drops on desktop */}
       <section className="relative overflow-hidden bg-gradient-hero border-b border-border">
-        <div className="absolute inset-0 -z-10 opacity-[0.35] [background-image:radial-gradient(hsl(var(--primary)/0.08)_1px,transparent_1px)] [background-size:22px_22px]" />
-        <div className="container py-16 md:py-20 lg:py-24">
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
-            <div className="animate-fade-up">
+        <div className="absolute inset-0 -z-10 opacity-[0.3] [background-image:radial-gradient(hsl(var(--primary)/0.08)_1px,transparent_1px)] [background-size:22px_22px]" />
+        <div className="container py-20 md:py-24 lg:py-28">
+          <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-start">
+            <div className="animate-fade-up lg:col-span-7 lg:pt-4">
               <p className="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-primary font-semibold">
                 <span className="h-px w-8 bg-primary/60" />
-                AI · Automation · Productivity
+                Independent · Editorial · Practical
               </p>
-              <h1 className="mt-5 font-serif text-[2.5rem] sm:text-5xl lg:text-[4.25rem] tracking-tight leading-[1.04] text-balance">
-                Work smarter with{" "}
-                <span className="text-primary">AI and modern workflows</span>
+              <h1 className="mt-5 font-serif text-[2.5rem] sm:text-5xl lg:text-[4.25rem] font-semibold tracking-tight leading-[1.05] text-balance">
+                The AI tools and workflows{" "}
+                <span className="text-primary">worth your attention.</span>
               </h1>
               <p className="mt-6 max-w-xl text-lg md:text-xl text-muted-foreground leading-relaxed text-pretty">
-                Practical comparisons, honest tool reviews, and automation playbooks for creators,
-                freelancers, students, and remote teams who want to ship more in less time.
+                AI Compass is an independent publication for people who actually use this stuff at work —
+                clear reviews, honest comparisons, and step-by-step guides without the hype.
               </p>
               <div className="mt-9 flex flex-wrap items-center gap-3">
                 <Link
@@ -71,29 +73,27 @@ const Index = () => {
                   Explore AI Tools <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  to="/category/comparisons"
+                  to="/category/tutorials"
                   className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-6 py-3 text-sm font-medium hover:border-primary/40 hover:text-primary transition"
                 >
-                  Browse Comparisons
+                  Read the tutorials
                 </Link>
               </div>
-              <dl className="mt-10 grid grid-cols-3 gap-6 max-w-md border-t border-border pt-6">
-                <div>
-                  <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Focus</dt>
-                  <dd className="mt-1 font-serif text-base">Workflows</dd>
-                </div>
-                <div>
-                  <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Tone</dt>
-                  <dd className="mt-1 font-serif text-base">Practical</dd>
-                </div>
-                <div>
-                  <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Cadence</dt>
-                  <dd className="mt-1 font-serif text-base">Evergreen</dd>
-                </div>
-              </dl>
+
+              <div className="mt-10 border-t border-border pt-5">
+                <p className="text-[11px] uppercase tracking-wider text-muted-foreground">What we cover</p>
+                <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-foreground/80">
+                  {coreAreas.map((area) => (
+                    <li key={area} className="inline-flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-primary/70" />
+                      {area}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
 
-            <div className="relative animate-fade-up">
+            <div className="relative animate-fade-up lg:col-span-5 lg:mt-20">
               <div className="absolute -inset-6 -z-10 rounded-3xl bg-primary/5 blur-2xl" />
               <img
                 src={heroImage}
@@ -132,9 +132,6 @@ const Index = () => {
       <section className="container py-12 md:py-16">
         <div className="flex items-end justify-between mb-8">
           <h2 className="font-serif text-3xl md:text-4xl tracking-tight">Explore by topic</h2>
-          <p className="hidden md:block text-sm text-muted-foreground max-w-md text-right">
-            Four focused hubs covering AI tools, hands-on comparisons, automation, and productivity.
-          </p>
         </div>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-2">
           {CATEGORIES.map((c) => (
@@ -149,7 +146,7 @@ const Index = () => {
               <h3 className="mt-2 font-serif text-xl tracking-tight group-hover:text-primary transition-colors">
                 {c.name}
               </h3>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3">
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-2">
                 {c.description}
               </p>
               <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
