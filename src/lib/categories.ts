@@ -14,13 +14,6 @@ export const CATEGORIES: CategoryMeta[] = [
       "Reviews, comparisons, and roundups of the AI tools, browser extensions, and free utilities worth your time.",
   },
   {
-    slug: "tutorials",
-    name: "Tutorials",
-    short: "Step-by-step guides",
-    description:
-      "Practical, hands-on tutorials for getting real work done with AI — from prompts to full workflows.",
-  },
-  {
     slug: "automation",
     name: "Automation",
     short: "Automate the busywork",
