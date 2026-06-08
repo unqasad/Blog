@@ -303,7 +303,7 @@ const Admin = () => {
           description: payload.reason ?? "No strong topic this run.",
         });
       } else {
-        toast({ title: "Draft generated", description: "New autonomous draft saved for review." });
+        toast({ title: "Draft generated", description: "New draft saved for review." });
       }
       loadPosts();
       loadLog();
@@ -379,7 +379,7 @@ VALUES ('YOUR_USER_ID', 'admin');`}
             </Button>
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
-            The autonomous writer runs every 12 hours: it researches topics, picks the best fit, and saves a full draft below for your review. You can also write a post manually below or trigger a run on demand.
+            Content is created manually and reviewed before publication. Use the form below to write a post by hand, or trigger an on-demand AI draft for review.
           </p>
           <form onSubmit={submit} className="mt-6 space-y-4">
             <div>
@@ -616,15 +616,15 @@ VALUES ('YOUR_USER_ID', 'admin');`}
           </ul>
         </section>
 
-        {/* Autonomous generation log */}
+        {/* Manual generation log */}
         <section className="mt-10 rounded-xl border border-border bg-card p-6 md:p-8 shadow-soft">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div>
               <h2 className="font-serif text-2xl tracking-tight flex items-center gap-2">
-                <Bot className="h-5 w-5 text-primary" /> Autonomous draft log
+                <Bot className="h-5 w-5 text-primary" /> AI draft log
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
-                The autonomous writer runs every 12 hours, researches topics, picks the best fit, and saves a draft here for your review. Nothing is published automatically.
+                Content is created manually and reviewed before publication. This log records on-demand AI draft runs triggered from the admin panel.
               </p>
             </div>
             <Badge variant="secondary">{logEntries.length} recent runs</Badge>
@@ -632,7 +632,7 @@ VALUES ('YOUR_USER_ID', 'admin');`}
           <ul className="mt-6 divide-y divide-border border border-border rounded-lg overflow-hidden">
             {logEntries.length === 0 && (
               <li className="p-4 text-sm text-muted-foreground">
-                No autonomous runs yet. The first scheduled run will appear here.
+                No runs yet. Trigger the "Generate AI draft" button above to create one.
               </li>
             )}
             {logEntries.map((l) => (
@@ -700,7 +700,7 @@ VALUES ('YOUR_USER_ID', 'admin');`}
                 <Link2 className="h-5 w-5 text-primary" /> Affiliate link inventory
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
-                The autonomous writer will only draft tool comparisons, reviews, or recommendation posts when every required tool has an active affiliate link here. Tools mentioned inside non-tool articles use their official homepage unless an affiliate link is on file.
+                On-demand AI drafts will only produce tool comparisons, reviews, or recommendation posts when every required tool has an active affiliate link here. Tools mentioned inside non-tool articles use their official homepage unless an affiliate link is on file.
               </p>
             </div>
           </div>
