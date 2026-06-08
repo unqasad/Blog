@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 
 export const NextStepCta = ({
   title = "Keep exploring",
-  description = "Discover more AI tools, comparisons, and automation workflows built for modern creators.",
+  description = "More AI tools, automation playbooks, and head-to-head comparisons built for people who actually ship work.",
   primary = { label: "Browse AI Tools", to: "/category/ai-tools" },
   secondary = { label: "Latest Comparisons", to: "/category/comparisons" },
 }: {

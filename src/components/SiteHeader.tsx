@@ -14,21 +14,20 @@ export const SiteHeader = () => {
           </span>
         </Link>
 
-        <nav aria-label="Primary" className="hidden md:flex items-center gap-6 text-sm">
+        <nav aria-label="Primary" className="hidden md:flex items-center gap-7 text-sm">
           <Link to="/category/ai-tools" className="text-muted-foreground hover:text-foreground transition">AI Tools</Link>
-          <Link to="/category/tutorials" className="text-muted-foreground hover:text-foreground transition">Tutorials</Link>
           <Link to="/category/automation" className="text-muted-foreground hover:text-foreground transition">Automation</Link>
           <Link to="/category/productivity" className="text-muted-foreground hover:text-foreground transition">Productivity</Link>
           <Link to="/category/comparisons" className="text-muted-foreground hover:text-foreground transition">Comparisons</Link>
-          <Link to="/about" className="text-muted-foreground hover:text-foreground transition">About</Link>
+          <Link
+            to="/about"
+            className="font-medium text-foreground hover:text-primary transition"
+          >
+            About
+          </Link>
         </nav>
 
-        <Link
-          to="/contact"
-          className="hidden md:inline-flex items-center text-sm font-medium text-primary hover:text-primary-glow transition"
-        >
-          Contact
-        </Link>
+        <div className="md:hidden" />
       </div>
     </header>
   );

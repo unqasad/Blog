@@ -20,9 +20,9 @@ const About = () => (
     <h2>What you'll find here</h2>
     <ul>
       <li>Honest reviews and head-to-head comparisons of AI tools</li>
-      <li>Step-by-step tutorials for real workflows, not toy demos</li>
       <li>Automation playbooks for content, ops, and everyday busywork</li>
       <li>Productivity systems that hold up outside the screenshot</li>
+      <li>Practical workflows, not toy demos</li>
     </ul>
 
     <p>
