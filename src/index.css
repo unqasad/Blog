@@ -90,33 +90,70 @@
 /* Article prose styling */
 @layer components {
   .prose-article {
-    @apply max-w-none text-[1.0625rem] leading-[1.75] text-foreground/90;
+    @apply max-w-none text-[1.0625rem] leading-[1.8] text-foreground/90;
   }
+  .prose-article > * + * { @apply mt-0; }
   .prose-article h2 {
-    @apply font-serif text-3xl md:text-[2rem] mt-12 mb-4 tracking-tight text-foreground;
+    @apply font-serif text-2xl md:text-[1.875rem] mt-14 mb-5 tracking-tight text-foreground scroll-mt-24;
   }
   .prose-article h3 {
-    @apply font-serif text-xl md:text-2xl mt-8 mb-3 tracking-tight text-foreground;
+    @apply font-serif text-xl md:text-2xl mt-10 mb-4 tracking-tight text-foreground scroll-mt-24;
   }
-  .prose-article p { @apply mb-5; }
-  .prose-article ul { @apply list-disc pl-6 mb-5 space-y-2; }
-  .prose-article ol { @apply list-decimal pl-6 mb-5 space-y-2; }
+  .prose-article h4 {
+    @apply font-serif text-lg md:text-xl mt-8 mb-3 tracking-tight text-foreground;
+  }
+  .prose-article p { @apply mb-6; }
+  .prose-article ul { @apply list-disc pl-6 mb-6 space-y-2 marker:text-primary/70; }
+  .prose-article ol { @apply list-decimal pl-6 mb-6 space-y-2 marker:text-primary/70; }
+  .prose-article li > p { @apply mb-2; }
   .prose-article a { @apply text-primary underline decoration-primary/30 underline-offset-4 hover:decoration-primary; }
   .prose-article strong { @apply font-semibold text-foreground; }
+  .prose-article hr { @apply my-10 border-t border-border; }
+  .prose-article img { @apply rounded-lg border border-border my-8 w-full; }
   .prose-article blockquote {
-    @apply border-l-4 border-primary bg-accent/40 pl-5 pr-4 py-3 my-6 italic text-foreground/85 rounded-r;
+    @apply border-l-4 border-primary bg-accent/40 pl-5 pr-4 py-4 my-8 italic text-foreground/85 rounded-r;
   }
+  .prose-article blockquote p { @apply mb-0; }
+
+  /* Tables — responsive horizontal scroll on small screens */
+  .prose-article .tiptap-table,
   .prose-article table {
-    @apply w-full border-collapse my-6 text-[0.95rem];
+    @apply w-full border-collapse my-8 text-[0.95rem];
+  }
+  .prose-article > table,
+  .prose-article > .tableWrapper {
+    @apply block overflow-x-auto rounded-md border border-border;
   }
   .prose-article th, .prose-article td {
-    @apply border border-border px-3 py-2 text-left;
+    @apply border border-border px-3 py-2 text-left align-top;
   }
-  .prose-article th { @apply bg-muted font-semibold; }
+  .prose-article th { @apply bg-muted font-semibold text-foreground; }
+  .prose-article tbody tr:nth-child(even) td { @apply bg-muted/30; }
+
   .prose-article code {
     @apply bg-muted text-foreground px-1.5 py-0.5 rounded text-[0.9em] font-mono;
+  }
+  .prose-article pre {
+    @apply bg-foreground/95 text-background rounded-lg p-4 my-6 overflow-x-auto text-sm leading-relaxed;
+  }
+  .prose-article pre code {
+    @apply bg-transparent text-inherit p-0 rounded-none;
   }
   .callout {
     @apply rounded-lg border border-border bg-card px-5 py-4 my-6 shadow-[var(--shadow-soft)];
   }
+
+  /* Tiptap editor: placeholder + focus */
+  .ProseMirror:focus { outline: none; }
+  .ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    @apply text-muted-foreground float-left h-0 pointer-events-none;
+  }
+  .ProseMirror table { @apply table-fixed; }
+  .ProseMirror td, .ProseMirror th { @apply relative; min-width: 60px; }
+  .ProseMirror .selectedCell:after {
+    content: "";
+    @apply absolute inset-0 bg-primary/10 pointer-events-none;
+  }
 }
+
