@@ -250,30 +250,101 @@ const Admin = () => {
     loadMessages();
   };
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const { error } = await supabase.from("posts").insert({
-      ...form,
-      published: true,
-      status: "published",
-      published_at: new Date().toISOString(),
-    });
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+  const buildPayload = () => {
+    const payload: Record<string, unknown> = {
+      slug: form.slug,
+      title: form.title,
+      excerpt: form.excerpt,
+      content: form.content,
+      meta_title: form.meta_title,
+      meta_description: form.meta_description,
+      category_slug: form.category_slug,
+      read_minutes: form.read_minutes,
+      seo_title: form.seo_title?.trim() || null,
+      canonical_url: form.canonical_url?.trim() || null,
+      featured_image: form.featured_image?.trim() || null,
+      og_image: form.og_image?.trim() || null,
+    };
+    return payload;
+  };
+
+  const submit = async (action: "draft" | "publish") => {
+    if (!form.title || !form.slug || !form.excerpt || !form.meta_title || !form.meta_description || !form.content) {
+      toast({ title: "Missing required fields", description: "Title, slug, excerpt, meta and content are required.", variant: "destructive" });
       return;
     }
-    toast({ title: "Post published" });
-    setForm({
-      ...form,
-      slug: "",
-      title: "",
-      excerpt: "",
-      content: "",
-      meta_title: "",
-      meta_description: "",
-    });
+    const payload = buildPayload();
+    if (editingId) {
+      const update: Record<string, unknown> = { ...payload };
+      if (action === "publish") {
+        update.status = "published";
+        update.published = true;
+        update.published_at = new Date().toISOString();
+      } else {
+        update.status = "draft";
+        update.published = false;
+      }
+      const { error } = await supabase.from("posts").update(update).eq("id", editingId);
+      if (error) {
+        toast({ title: "Error", description: error.message, variant: "destructive" });
+        return;
+      }
+      toast({ title: action === "publish" ? "Post updated & published" : "Draft saved" });
+    } else {
+      const insert: Record<string, unknown> = { ...payload };
+      if (action === "publish") {
+        insert.status = "published";
+        insert.published = true;
+        insert.published_at = new Date().toISOString();
+      } else {
+        insert.status = "draft";
+        insert.published = false;
+      }
+      const { error } = await supabase.from("posts").insert(insert);
+      if (error) {
+        toast({ title: "Error", description: error.message, variant: "destructive" });
+        return;
+      }
+      toast({ title: action === "publish" ? "Post published" : "Draft saved" });
+    }
+    setForm(emptyForm);
+    setEditingId(null);
     loadPosts();
   };
+
+  const loadPostIntoEditor = async (id: string) => {
+    const { data, error } = await supabase
+      .from("posts")
+      .select("id,slug,title,excerpt,content,meta_title,meta_description,seo_title,canonical_url,featured_image,og_image,category_slug,read_minutes")
+      .eq("id", id)
+      .maybeSingle();
+    if (error || !data) {
+      toast({ title: "Could not load post", variant: "destructive" });
+      return;
+    }
+    setEditingId(data.id);
+    setForm({
+      slug: data.slug ?? "",
+      title: data.title ?? "",
+      excerpt: data.excerpt ?? "",
+      content: data.content ?? "",
+      meta_title: data.meta_title ?? "",
+      meta_description: data.meta_description ?? "",
+      seo_title: data.seo_title ?? "",
+      canonical_url: data.canonical_url ?? "",
+      featured_image: data.featured_image ?? "",
+      og_image: data.og_image ?? "",
+      category_slug: data.category_slug ?? "ai-tools",
+      read_minutes: data.read_minutes ?? 6,
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setForm(emptyForm);
+  };
+
 
   const publishPost = async (id: string) => {
     const { error } = await supabase
