@@ -691,6 +691,9 @@ VALUES ('YOUR_USER_ID', 'admin');`}
                       Publish
                     </Button>
                   )}
+                  <Button size="sm" variant="ghost" onClick={() => loadPostIntoEditor(p.id)} className="gap-1">
+                    <Pencil className="h-3.5 w-3.5" /> Edit
+                  </Button>
                   <Button size="sm" variant="ghost" onClick={() => deletePost(p.id)}>
                     Delete
                   </Button>
