@@ -973,6 +973,15 @@ VALUES ('YOUR_USER_ID', 'admin');`}
           </ul>
         </section>
       </div>
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Post preview</DialogTitle>
+          </DialogHeader>
+          <PostPreview post={form} />
+        </DialogContent>
+      </Dialog>
     </SiteLayout>
   );
 };
