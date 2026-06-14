@@ -300,7 +300,7 @@ const Admin = () => {
         insert.status = "draft";
         insert.published = false;
       }
-      const { error } = await supabase.from("posts").insert(insert);
+      const { error } = await supabase.from("posts").insert(insert as never);
       if (error) {
         toast({ title: "Error", description: error.message, variant: "destructive" });
         return;
