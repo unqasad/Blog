@@ -462,7 +462,20 @@ VALUES ('YOUR_USER_ID', 'admin');`}
       <div className="container py-12 grid gap-10 lg:grid-cols-2">
         <section>
           <div className="flex items-center justify-between gap-4 flex-wrap">
-            <h1 className="font-serif text-3xl tracking-tight">New post</h1>
+            <div>
+              <h1 className="font-serif text-3xl tracking-tight">
+                {editingId ? "Edit post" : "New post"}
+              </h1>
+              {editingId && (
+                <button
+                  type="button"
+                  onClick={cancelEdit}
+                  className="mt-1 text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                >
+                  <X className="h-3 w-3" /> Cancel edit & start a new post
+                </button>
+              )}
+            </div>
             <Button
               type="button"
               onClick={generateDraft}
@@ -478,81 +491,145 @@ VALUES ('YOUR_USER_ID', 'admin');`}
             </Button>
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
-            Content is created manually and reviewed before publication. Use the form below to write a post by hand, or trigger an on-demand AI draft for review.
+            Content is created manually and reviewed before publication. Compose with the rich-text editor below, preview before publishing, and save as a draft when you're not ready to go live.
           </p>
-          <form onSubmit={submit} className="mt-6 space-y-4">
-            <div>
-              <Label>Title</Label>
-              <Input
-                required
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
-              />
+          <div className="mt-6 space-y-5">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <Label>Title</Label>
+                <Input
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label>Slug</Label>
+                <Input
+                  value={form.slug}
+                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                  placeholder="my-post-slug"
+                />
+              </div>
+              <div>
+                <Label>Category</Label>
+                <Select
+                  value={form.category_slug}
+                  onValueChange={(v) => setForm({ ...form, category_slug: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CATEGORIES.map((c) => (
+                      <SelectItem key={c.slug} value={c.slug}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Read time (min)</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  value={form.read_minutes}
+                  onChange={(e) => setForm({ ...form, read_minutes: Number(e.target.value) || 1 })}
+                />
+              </div>
+              <div>
+                <Label>Featured image URL</Label>
+                <Input
+                  placeholder="https://images.unsplash.com/…"
+                  value={form.featured_image}
+                  onChange={(e) => setForm({ ...form, featured_image: e.target.value })}
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Shown on the article, homepage cards, and category pages. Falls back to the site hero image when blank.
+                </p>
+              </div>
             </div>
-            <div>
-              <Label>Slug</Label>
-              <Input
-                required
-                value={form.slug}
-                onChange={(e) => setForm({ ...form, slug: e.target.value })}
-              />
-            </div>
-            <div>
-              <Label>Category</Label>
-              <Select
-                value={form.category_slug}
-                onValueChange={(v) => setForm({ ...form, category_slug: v })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {CATEGORIES.map((c) => (
-                    <SelectItem key={c.slug} value={c.slug}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+
             <div>
               <Label>Excerpt</Label>
               <Textarea
-                required
                 rows={2}
                 value={form.excerpt}
                 onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
               />
             </div>
-            <div>
-              <Label>Meta title</Label>
-              <Input
-                required
-                value={form.meta_title}
-                onChange={(e) => setForm({ ...form, meta_title: e.target.value })}
-              />
+
+            <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">SEO &amp; social sharing</p>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <Label>SEO title</Label>
+                  <Input
+                    placeholder="Defaults to meta title"
+                    value={form.seo_title}
+                    onChange={(e) => setForm({ ...form, seo_title: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>Canonical URL</Label>
+                  <Input
+                    placeholder="Optional override"
+                    value={form.canonical_url}
+                    onChange={(e) => setForm({ ...form, canonical_url: e.target.value })}
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <Label>Meta title</Label>
+                  <Input
+                    value={form.meta_title}
+                    onChange={(e) => setForm({ ...form, meta_title: e.target.value })}
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <Label>Meta description</Label>
+                  <Textarea
+                    rows={2}
+                    value={form.meta_description}
+                    onChange={(e) => setForm({ ...form, meta_description: e.target.value })}
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <Label>Social image URL (Open Graph / Twitter)</Label>
+                  <Input
+                    placeholder="Defaults to featured image"
+                    value={form.og_image}
+                    onChange={(e) => setForm({ ...form, og_image: e.target.value })}
+                  />
+                </div>
+              </div>
             </div>
+
             <div>
-              <Label>Meta description</Label>
-              <Textarea
-                required
-                rows={2}
-                value={form.meta_description}
-                onChange={(e) => setForm({ ...form, meta_description: e.target.value })}
-              />
-            </div>
-            <div>
-              <Label>Content (HTML)</Label>
-              <Textarea
-                required
-                rows={12}
+              <Label>Content</Label>
+              <RichTextEditor
                 value={form.content}
-                onChange={(e) => setForm({ ...form, content: e.target.value })}
+                onChange={(html) => setForm({ ...form, content: html })}
+                placeholder="Write your article…"
               />
+              <p className="text-[11px] text-muted-foreground mt-1">
+                Headings, lists, tables, images, quotes, code, links and dividers are supported. Saved as HTML — compatible with every existing post.
+              </p>
             </div>
-            <Button type="submit">Publish</Button>
-          </form>
+
+            <div className="flex flex-wrap gap-2">
+              <Button type="button" onClick={() => submit("publish")}>
+                {editingId ? "Update & publish" : "Publish"}
+              </Button>
+              <Button type="button" variant="outline" onClick={() => submit("draft")}>
+                Save as draft
+              </Button>
+              <Button type="button" variant="ghost" onClick={() => setPreviewOpen(true)} className="gap-1.5">
+                <Eye className="h-4 w-4" /> Preview
+              </Button>
+            </div>
+          </div>
         </section>
+
 
         <section>
           <div className="flex items-center justify-between gap-3 flex-wrap">
