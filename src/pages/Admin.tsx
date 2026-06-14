@@ -284,7 +284,7 @@ const Admin = () => {
         update.status = "draft";
         update.published = false;
       }
-      const { error } = await supabase.from("posts").update(update).eq("id", editingId);
+      const { error } = await supabase.from("posts").update(update as never).eq("id", editingId);
       if (error) {
         toast({ title: "Error", description: error.message, variant: "destructive" });
         return;
