@@ -15,9 +15,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { CATEGORIES } from "@/lib/categories";
-import { Sparkles, Loader2, Mail, MailOpen, Trash2, Bot, Link2, Plus } from "lucide-react";
+import { Sparkles, Loader2, Mail, MailOpen, Trash2, Bot, Link2, Plus, Eye, Pencil, X } from "lucide-react";
+import RichTextEditor from "@/components/RichTextEditor";
+import PostPreview from "@/components/PostPreview";
 
 type PostStatus = "draft" | "scheduled" | "published";
 
@@ -93,9 +101,29 @@ const Admin = () => {
     content: "",
     meta_title: "",
     meta_description: "",
+    seo_title: "",
+    canonical_url: "",
+    featured_image: "",
+    og_image: "",
     category_slug: "ai-tools",
     read_minutes: 6,
   });
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const emptyForm = {
+    slug: "",
+    title: "",
+    excerpt: "",
+    content: "",
+    meta_title: "",
+    meta_description: "",
+    seo_title: "",
+    canonical_url: "",
+    featured_image: "",
+    og_image: "",
+    category_slug: "ai-tools",
+    read_minutes: 6,
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
@@ -222,30 +250,101 @@ const Admin = () => {
     loadMessages();
   };
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const { error } = await supabase.from("posts").insert({
-      ...form,
-      published: true,
-      status: "published",
-      published_at: new Date().toISOString(),
-    });
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+  const buildPayload = () => {
+    const payload: Record<string, unknown> = {
+      slug: form.slug,
+      title: form.title,
+      excerpt: form.excerpt,
+      content: form.content,
+      meta_title: form.meta_title,
+      meta_description: form.meta_description,
+      category_slug: form.category_slug,
+      read_minutes: form.read_minutes,
+      seo_title: form.seo_title?.trim() || null,
+      canonical_url: form.canonical_url?.trim() || null,
+      featured_image: form.featured_image?.trim() || null,
+      og_image: form.og_image?.trim() || null,
+    };
+    return payload;
+  };
+
+  const submit = async (action: "draft" | "publish") => {
+    if (!form.title || !form.slug || !form.excerpt || !form.meta_title || !form.meta_description || !form.content) {
+      toast({ title: "Missing required fields", description: "Title, slug, excerpt, meta and content are required.", variant: "destructive" });
       return;
     }
-    toast({ title: "Post published" });
-    setForm({
-      ...form,
-      slug: "",
-      title: "",
-      excerpt: "",
-      content: "",
-      meta_title: "",
-      meta_description: "",
-    });
+    const payload = buildPayload();
+    if (editingId) {
+      const update: Record<string, unknown> = { ...payload };
+      if (action === "publish") {
+        update.status = "published";
+        update.published = true;
+        update.published_at = new Date().toISOString();
+      } else {
+        update.status = "draft";
+        update.published = false;
+      }
+      const { error } = await supabase.from("posts").update(update as never).eq("id", editingId);
+      if (error) {
+        toast({ title: "Error", description: error.message, variant: "destructive" });
+        return;
+      }
+      toast({ title: action === "publish" ? "Post updated & published" : "Draft saved" });
+    } else {
+      const insert: Record<string, unknown> = { ...payload };
+      if (action === "publish") {
+        insert.status = "published";
+        insert.published = true;
+        insert.published_at = new Date().toISOString();
+      } else {
+        insert.status = "draft";
+        insert.published = false;
+      }
+      const { error } = await supabase.from("posts").insert(insert as never);
+      if (error) {
+        toast({ title: "Error", description: error.message, variant: "destructive" });
+        return;
+      }
+      toast({ title: action === "publish" ? "Post published" : "Draft saved" });
+    }
+    setForm(emptyForm);
+    setEditingId(null);
     loadPosts();
   };
+
+  const loadPostIntoEditor = async (id: string) => {
+    const { data, error } = await supabase
+      .from("posts")
+      .select("id,slug,title,excerpt,content,meta_title,meta_description,seo_title,canonical_url,featured_image,og_image,category_slug,read_minutes")
+      .eq("id", id)
+      .maybeSingle();
+    if (error || !data) {
+      toast({ title: "Could not load post", variant: "destructive" });
+      return;
+    }
+    setEditingId(data.id);
+    setForm({
+      slug: data.slug ?? "",
+      title: data.title ?? "",
+      excerpt: data.excerpt ?? "",
+      content: data.content ?? "",
+      meta_title: data.meta_title ?? "",
+      meta_description: data.meta_description ?? "",
+      seo_title: data.seo_title ?? "",
+      canonical_url: data.canonical_url ?? "",
+      featured_image: data.featured_image ?? "",
+      og_image: data.og_image ?? "",
+      category_slug: data.category_slug ?? "ai-tools",
+      read_minutes: data.read_minutes ?? 6,
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setForm(emptyForm);
+  };
+
 
   const publishPost = async (id: string) => {
     const { error } = await supabase
@@ -363,7 +462,20 @@ VALUES ('YOUR_USER_ID', 'admin');`}
       <div className="container py-12 grid gap-10 lg:grid-cols-2">
         <section>
           <div className="flex items-center justify-between gap-4 flex-wrap">
-            <h1 className="font-serif text-3xl tracking-tight">New post</h1>
+            <div>
+              <h1 className="font-serif text-3xl tracking-tight">
+                {editingId ? "Edit post" : "New post"}
+              </h1>
+              {editingId && (
+                <button
+                  type="button"
+                  onClick={cancelEdit}
+                  className="mt-1 text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                >
+                  <X className="h-3 w-3" /> Cancel edit & start a new post
+                </button>
+              )}
+            </div>
             <Button
               type="button"
               onClick={generateDraft}
@@ -379,81 +491,145 @@ VALUES ('YOUR_USER_ID', 'admin');`}
             </Button>
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
-            Content is created manually and reviewed before publication. Use the form below to write a post by hand, or trigger an on-demand AI draft for review.
+            Content is created manually and reviewed before publication. Compose with the rich-text editor below, preview before publishing, and save as a draft when you're not ready to go live.
           </p>
-          <form onSubmit={submit} className="mt-6 space-y-4">
-            <div>
-              <Label>Title</Label>
-              <Input
-                required
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
-              />
+          <div className="mt-6 space-y-5">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <Label>Title</Label>
+                <Input
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label>Slug</Label>
+                <Input
+                  value={form.slug}
+                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                  placeholder="my-post-slug"
+                />
+              </div>
+              <div>
+                <Label>Category</Label>
+                <Select
+                  value={form.category_slug}
+                  onValueChange={(v) => setForm({ ...form, category_slug: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CATEGORIES.map((c) => (
+                      <SelectItem key={c.slug} value={c.slug}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Read time (min)</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  value={form.read_minutes}
+                  onChange={(e) => setForm({ ...form, read_minutes: Number(e.target.value) || 1 })}
+                />
+              </div>
+              <div>
+                <Label>Featured image URL</Label>
+                <Input
+                  placeholder="https://images.unsplash.com/…"
+                  value={form.featured_image}
+                  onChange={(e) => setForm({ ...form, featured_image: e.target.value })}
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Shown on the article, homepage cards, and category pages. Falls back to the site hero image when blank.
+                </p>
+              </div>
             </div>
-            <div>
-              <Label>Slug</Label>
-              <Input
-                required
-                value={form.slug}
-                onChange={(e) => setForm({ ...form, slug: e.target.value })}
-              />
-            </div>
-            <div>
-              <Label>Category</Label>
-              <Select
-                value={form.category_slug}
-                onValueChange={(v) => setForm({ ...form, category_slug: v })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {CATEGORIES.map((c) => (
-                    <SelectItem key={c.slug} value={c.slug}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+
             <div>
               <Label>Excerpt</Label>
               <Textarea
-                required
                 rows={2}
                 value={form.excerpt}
                 onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
               />
             </div>
-            <div>
-              <Label>Meta title</Label>
-              <Input
-                required
-                value={form.meta_title}
-                onChange={(e) => setForm({ ...form, meta_title: e.target.value })}
-              />
+
+            <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">SEO &amp; social sharing</p>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <Label>SEO title</Label>
+                  <Input
+                    placeholder="Defaults to meta title"
+                    value={form.seo_title}
+                    onChange={(e) => setForm({ ...form, seo_title: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>Canonical URL</Label>
+                  <Input
+                    placeholder="Optional override"
+                    value={form.canonical_url}
+                    onChange={(e) => setForm({ ...form, canonical_url: e.target.value })}
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <Label>Meta title</Label>
+                  <Input
+                    value={form.meta_title}
+                    onChange={(e) => setForm({ ...form, meta_title: e.target.value })}
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <Label>Meta description</Label>
+                  <Textarea
+                    rows={2}
+                    value={form.meta_description}
+                    onChange={(e) => setForm({ ...form, meta_description: e.target.value })}
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <Label>Social image URL (Open Graph / Twitter)</Label>
+                  <Input
+                    placeholder="Defaults to featured image"
+                    value={form.og_image}
+                    onChange={(e) => setForm({ ...form, og_image: e.target.value })}
+                  />
+                </div>
+              </div>
             </div>
+
             <div>
-              <Label>Meta description</Label>
-              <Textarea
-                required
-                rows={2}
-                value={form.meta_description}
-                onChange={(e) => setForm({ ...form, meta_description: e.target.value })}
-              />
-            </div>
-            <div>
-              <Label>Content (HTML)</Label>
-              <Textarea
-                required
-                rows={12}
+              <Label>Content</Label>
+              <RichTextEditor
                 value={form.content}
-                onChange={(e) => setForm({ ...form, content: e.target.value })}
+                onChange={(html) => setForm({ ...form, content: html })}
+                placeholder="Write your article…"
               />
+              <p className="text-[11px] text-muted-foreground mt-1">
+                Headings, lists, tables, images, quotes, code, links and dividers are supported. Saved as HTML — compatible with every existing post.
+              </p>
             </div>
-            <Button type="submit">Publish</Button>
-          </form>
+
+            <div className="flex flex-wrap gap-2">
+              <Button type="button" onClick={() => submit("publish")}>
+                {editingId ? "Update & publish" : "Publish"}
+              </Button>
+              <Button type="button" variant="outline" onClick={() => submit("draft")}>
+                Save as draft
+              </Button>
+              <Button type="button" variant="ghost" onClick={() => setPreviewOpen(true)} className="gap-1.5">
+                <Eye className="h-4 w-4" /> Preview
+              </Button>
+            </div>
+          </div>
         </section>
+
 
         <section>
           <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -515,6 +691,9 @@ VALUES ('YOUR_USER_ID', 'admin');`}
                       Publish
                     </Button>
                   )}
+                  <Button size="sm" variant="ghost" onClick={() => loadPostIntoEditor(p.id)} className="gap-1">
+                    <Pencil className="h-3.5 w-3.5" /> Edit
+                  </Button>
                   <Button size="sm" variant="ghost" onClick={() => deletePost(p.id)}>
                     Delete
                   </Button>
@@ -794,6 +973,15 @@ VALUES ('YOUR_USER_ID', 'admin');`}
           </ul>
         </section>
       </div>
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Post preview</DialogTitle>
+          </DialogHeader>
+          <PostPreview post={form} />
+        </DialogContent>
+      </Dialog>
     </SiteLayout>
   );
 };
