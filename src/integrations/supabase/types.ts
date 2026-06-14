@@ -161,6 +161,7 @@ export type Database = {
       posts: {
         Row: {
           author: string
+          canonical_url: string | null
           category_slug: string
           content: string
           created_at: string
@@ -171,12 +172,14 @@ export type Database = {
           key_takeaways: string[]
           meta_description: string
           meta_title: string
+          og_image: string | null
           primary_keyword: string | null
           published: boolean
           published_at: string
           read_minutes: number
           scheduled_for: string | null
           secondary_keywords: string[]
+          seo_title: string | null
           slug: string
           status: string
           title: string
@@ -184,6 +187,7 @@ export type Database = {
         }
         Insert: {
           author?: string
+          canonical_url?: string | null
           category_slug: string
           content: string
           created_at?: string
@@ -194,12 +198,14 @@ export type Database = {
           key_takeaways?: string[]
           meta_description: string
           meta_title: string
+          og_image?: string | null
           primary_keyword?: string | null
           published?: boolean
           published_at?: string
           read_minutes?: number
           scheduled_for?: string | null
           secondary_keywords?: string[]
+          seo_title?: string | null
           slug: string
           status?: string
           title: string
@@ -207,6 +213,7 @@ export type Database = {
         }
         Update: {
           author?: string
+          canonical_url?: string | null
           category_slug?: string
           content?: string
           created_at?: string
@@ -217,12 +224,14 @@ export type Database = {
           key_takeaways?: string[]
           meta_description?: string
           meta_title?: string
+          og_image?: string | null
           primary_keyword?: string | null
           published?: boolean
           published_at?: string
           read_minutes?: number
           scheduled_for?: string | null
           secondary_keywords?: string[]
+          seo_title?: string | null
           slug?: string
           status?: string
           title?: string

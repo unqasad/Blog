@@ -1,0 +1,4 @@
+ALTER TABLE public.posts
+  ADD COLUMN IF NOT EXISTS seo_title TEXT,
+  ADD COLUMN IF NOT EXISTS canonical_url TEXT,
+  ADD COLUMN IF NOT EXISTS og_image TEXT;
