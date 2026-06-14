@@ -15,9 +15,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { CATEGORIES } from "@/lib/categories";
-import { Sparkles, Loader2, Mail, MailOpen, Trash2, Bot, Link2, Plus } from "lucide-react";
+import { Sparkles, Loader2, Mail, MailOpen, Trash2, Bot, Link2, Plus, Eye, Pencil, X } from "lucide-react";
+import RichTextEditor from "@/components/RichTextEditor";
+import PostPreview from "@/components/PostPreview";
 
 type PostStatus = "draft" | "scheduled" | "published";
 
