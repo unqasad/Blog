@@ -101,9 +101,29 @@ const Admin = () => {
     content: "",
     meta_title: "",
     meta_description: "",
+    seo_title: "",
+    canonical_url: "",
+    featured_image: "",
+    og_image: "",
     category_slug: "ai-tools",
     read_minutes: 6,
   });
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const emptyForm = {
+    slug: "",
+    title: "",
+    excerpt: "",
+    content: "",
+    meta_title: "",
+    meta_description: "",
+    seo_title: "",
+    canonical_url: "",
+    featured_image: "",
+    og_image: "",
+    category_slug: "ai-tools",
+    read_minutes: 6,
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
