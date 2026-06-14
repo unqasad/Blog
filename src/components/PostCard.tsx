@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, Clock } from "lucide-react";
 import { CATEGORY_BY_SLUG } from "@/lib/categories";
 import { resolveImage } from "@/lib/image-map";
+import { FALLBACK_FEATURED_IMAGE } from "@/lib/fallback-image";
 
 export type PostCardData = {
   slug: string;
@@ -15,28 +16,27 @@ export type PostCardData = {
 
 export const PostCard = ({ post, featured = false }: { post: PostCardData; featured?: boolean }) => {
   const category = CATEGORY_BY_SLUG[post.category_slug];
+  const cover = post.featured_image || FALLBACK_FEATURED_IMAGE;
   return (
     <article
       className={`group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-soft transition hover:shadow-card hover:-translate-y-0.5 ${
         featured ? "md:flex-row" : ""
       }`}
     >
-      {post.featured_image && (
-        <Link
-          to={`/blog/${post.slug}`}
-          className={`block overflow-hidden bg-muted ${featured ? "md:w-1/2" : "aspect-[16/9]"}`}
-          aria-label={post.title}
-        >
-          <img
-            src={resolveImage(post.featured_image)}
-            alt={post.title}
-            loading="lazy"
-            width={1600}
-            height={900}
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-          />
-        </Link>
-      )}
+      <Link
+        to={`/blog/${post.slug}`}
+        className={`block overflow-hidden bg-muted ${featured ? "md:w-1/2" : "aspect-[16/9]"}`}
+        aria-label={post.title}
+      >
+        <img
+          src={resolveImage(cover)}
+          alt={post.title}
+          loading="lazy"
+          width={1600}
+          height={900}
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+        />
+      </Link>
       <div className={`flex flex-1 flex-col p-6 ${featured ? "md:p-8" : ""}`}>
         {category && (
           <Link
