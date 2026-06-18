@@ -998,7 +998,7 @@ VALUES ('YOUR_USER_ID', 'admin');`}
           <DialogHeader>
             <DialogTitle>Post preview</DialogTitle>
           </DialogHeader>
-          <PostPreview post={form} />
+          <PostPreview post={{ ...form, read_minutes: computedReadMinutes }} />
         </DialogContent>
       </Dialog>
     </SiteLayout>
