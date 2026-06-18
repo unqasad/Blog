@@ -14,8 +14,8 @@ const slugify = (raw: string) =>
 
 /**
  * Parses an HTML string and returns headings (h2/h3) with stable IDs.
- * Also returns the rewritten HTML where each heading has an id attribute
- * the TOC links can target. Pure — safe to call during render.
+ * Returns the rewritten HTML where each heading has an id attribute the
+ * TOC links can target. Pure — safe to call during render.
  */
 export const buildToc = (html: string): { items: TocItem[]; html: string } => {
   if (typeof window === "undefined" || !html) return { items: [], html };
@@ -83,31 +83,57 @@ export const TableOfContents = ({ items }: { items: TocItem[] }) => {
 
   return (
     <>
-      {/* Desktop sticky sidebar */}
-      <aside className="hidden lg:block sticky top-24 self-start max-h-[calc(100vh-7rem)] overflow-auto pr-2">
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-          On this page
-        </p>
-        <ul className="space-y-1.5 text-sm border-l border-border">
-          {items.map((item) => (
-            <li
-              key={item.id}
-              className={item.level === 3 ? "pl-6" : "pl-4"}
+      {/* Desktop: narrow sticky rail that expands on hover */}
+      <aside className="hidden lg:block">
+        <div className="sticky top-24 self-start">
+          <div className="group/toc relative">
+            {/* Collapsed rail: tick marks per section. Expands into a full panel on hover. */}
+            <div
+              className="w-10 group-hover/toc:w-72 transition-[width] duration-300 ease-out
+                         rounded-md border border-transparent group-hover/toc:border-border
+                         group-hover/toc:bg-background/95 group-hover/toc:shadow-card
+                         group-hover/toc:backdrop-blur
+                         overflow-hidden max-h-[calc(100vh-7rem)] group-hover/toc:overflow-auto"
             >
-              <a
-                href={`#${item.id}`}
-                onClick={(e) => handleClick(e, item.id)}
-                className={`-ml-px block border-l-2 py-1 leading-snug transition ${
-                  active === item.id
-                    ? "border-primary text-primary font-medium"
-                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
-                }`}
-              >
-                {item.text}
-              </a>
-            </li>
-          ))}
-        </ul>
+              <p className="hidden group-hover/toc:block px-4 pt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                On this page
+              </p>
+              <ul className="py-3 group-hover/toc:px-4 space-y-1 text-sm border-l border-border group-hover/toc:border-l-0">
+                {items.map((item) => (
+                  <li
+                    key={item.id}
+                    className={item.level === 3 ? "group-hover/toc:pl-4" : ""}
+                  >
+                    <a
+                      href={`#${item.id}`}
+                      onClick={(e) => handleClick(e, item.id)}
+                      title={item.text}
+                      className={`-ml-px flex items-center border-l-2 py-1.5 leading-snug transition
+                                  group-hover/toc:border-l-2
+                                  ${
+                                    active === item.id
+                                      ? "border-primary text-primary font-medium"
+                                      : "border-transparent text-muted-foreground hover:text-foreground group-hover/toc:hover:border-border"
+                                  }`}
+                    >
+                      {/* Rail tick (visible when collapsed) */}
+                      <span
+                        className={`block h-px w-4 ml-2 group-hover/toc:hidden ${
+                          active === item.id ? "bg-primary" : "bg-border"
+                        } ${item.level === 3 ? "w-2 ml-4" : ""}`}
+                        aria-hidden
+                      />
+                      {/* Full label (visible on hover) */}
+                      <span className="hidden group-hover/toc:block pl-3 pr-2 truncate">
+                        {item.text}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
       </aside>
 
       {/* Mobile collapsible TOC */}

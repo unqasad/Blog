@@ -106,7 +106,7 @@ const Admin = () => {
     featured_image: "",
     og_image: "",
     category_slug: "ai-tools",
-    read_minutes: 6,
+    author: "Editorial Team",
   });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -122,8 +122,15 @@ const Admin = () => {
     featured_image: "",
     og_image: "",
     category_slug: "ai-tools",
-    read_minutes: 6,
+    author: "Editorial Team",
   };
+
+  // Auto-calculate read time from the rich-text content (≈220 wpm).
+  const computedReadMinutes = (() => {
+    const text = (form.content || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    const words = text ? text.split(" ").length : 0;
+    return Math.max(1, Math.round(words / 220));
+  })();
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
@@ -259,7 +266,8 @@ const Admin = () => {
       meta_title: form.meta_title,
       meta_description: form.meta_description,
       category_slug: form.category_slug,
-      read_minutes: form.read_minutes,
+      read_minutes: computedReadMinutes,
+      author: form.author?.trim() || "Editorial Team",
       seo_title: form.seo_title?.trim() || null,
       canonical_url: form.canonical_url?.trim() || null,
       featured_image: form.featured_image?.trim() || null,
@@ -315,7 +323,7 @@ const Admin = () => {
   const loadPostIntoEditor = async (id: string) => {
     const { data, error } = await supabase
       .from("posts")
-      .select("id,slug,title,excerpt,content,meta_title,meta_description,seo_title,canonical_url,featured_image,og_image,category_slug,read_minutes")
+      .select("id,slug,title,excerpt,content,meta_title,meta_description,seo_title,canonical_url,featured_image,og_image,category_slug,author")
       .eq("id", id)
       .maybeSingle();
     if (error || !data) {
@@ -335,7 +343,7 @@ const Admin = () => {
       featured_image: data.featured_image ?? "",
       og_image: data.og_image ?? "",
       category_slug: data.category_slug ?? "ai-tools",
-      read_minutes: data.read_minutes ?? 6,
+      author: data.author ?? "Editorial Team",
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -529,13 +537,24 @@ VALUES ('YOUR_USER_ID', 'admin');`}
                 </Select>
               </div>
               <div>
-                <Label>Read time (min)</Label>
+                <Label>Author</Label>
                 <Input
-                  type="number"
-                  min={1}
-                  value={form.read_minutes}
-                  onChange={(e) => setForm({ ...form, read_minutes: Number(e.target.value) || 1 })}
+                  placeholder="Editorial Team"
+                  value={form.author}
+                  onChange={(e) => setForm({ ...form, author: e.target.value })}
                 />
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Shown beneath the article title. Leave blank to default to "Editorial Team".
+                </p>
+              </div>
+              <div>
+                <Label>Read time</Label>
+                <div className="h-10 flex items-center px-3 rounded-md border border-input bg-muted/40 text-sm text-muted-foreground">
+                  {computedReadMinutes} min read · auto-calculated
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Recalculated from your content (~220 words/minute).
+                </p>
               </div>
               <div>
                 <Label>Featured image URL</Label>
@@ -979,7 +998,7 @@ VALUES ('YOUR_USER_ID', 'admin');`}
           <DialogHeader>
             <DialogTitle>Post preview</DialogTitle>
           </DialogHeader>
-          <PostPreview post={form} />
+          <PostPreview post={{ ...form, read_minutes: computedReadMinutes }} />
         </DialogContent>
       </Dialog>
     </SiteLayout>
