@@ -537,13 +537,24 @@ VALUES ('YOUR_USER_ID', 'admin');`}
                 </Select>
               </div>
               <div>
-                <Label>Read time (min)</Label>
+                <Label>Author</Label>
                 <Input
-                  type="number"
-                  min={1}
-                  value={form.read_minutes}
-                  onChange={(e) => setForm({ ...form, read_minutes: Number(e.target.value) || 1 })}
+                  placeholder="Editorial Team"
+                  value={form.author}
+                  onChange={(e) => setForm({ ...form, author: e.target.value })}
                 />
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Shown beneath the article title. Leave blank to default to "Editorial Team".
+                </p>
+              </div>
+              <div>
+                <Label>Read time</Label>
+                <div className="h-10 flex items-center px-3 rounded-md border border-input bg-muted/40 text-sm text-muted-foreground">
+                  {computedReadMinutes} min read · auto-calculated
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Recalculated from your content (~220 words/minute).
+                </p>
               </div>
               <div>
                 <Label>Featured image URL</Label>
