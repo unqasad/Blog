@@ -323,7 +323,7 @@ const Admin = () => {
   const loadPostIntoEditor = async (id: string) => {
     const { data, error } = await supabase
       .from("posts")
-      .select("id,slug,title,excerpt,content,meta_title,meta_description,seo_title,canonical_url,featured_image,og_image,category_slug,read_minutes")
+      .select("id,slug,title,excerpt,content,meta_title,meta_description,seo_title,canonical_url,featured_image,og_image,category_slug,author")
       .eq("id", id)
       .maybeSingle();
     if (error || !data) {
@@ -343,7 +343,7 @@ const Admin = () => {
       featured_image: data.featured_image ?? "",
       og_image: data.og_image ?? "",
       category_slug: data.category_slug ?? "ai-tools",
-      read_minutes: data.read_minutes ?? 6,
+      author: data.author ?? "Editorial Team",
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
