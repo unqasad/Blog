@@ -106,7 +106,7 @@ const Admin = () => {
     featured_image: "",
     og_image: "",
     category_slug: "ai-tools",
-    read_minutes: 6,
+    author: "Editorial Team",
   });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -122,8 +122,15 @@ const Admin = () => {
     featured_image: "",
     og_image: "",
     category_slug: "ai-tools",
-    read_minutes: 6,
+    author: "Editorial Team",
   };
+
+  // Auto-calculate read time from the rich-text content (≈220 wpm).
+  const computedReadMinutes = (() => {
+    const text = (form.content || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    const words = text ? text.split(" ").length : 0;
+    return Math.max(1, Math.round(words / 220));
+  })();
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
