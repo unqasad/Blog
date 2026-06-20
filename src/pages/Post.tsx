@@ -151,9 +151,16 @@ const Post = () => {
     });
   }, [post]);
 
-  const { items: tocItems, html: contentWithAnchors } = useMemo(
-    () => buildToc(sanitizedContent),
+  // Pull any inline FAQ out of the body first, so it doesn't pollute the TOC
+  // and so we can render it as an accordion in its place.
+  const { faq: detectedFaq, cleanedHtml } = useMemo(
+    () => extractFaqSection(sanitizedContent),
     [sanitizedContent],
+  );
+
+  const { items: tocItems, html: contentWithAnchors } = useMemo(
+    () => buildToc(cleanedHtml),
+    [cleanedHtml],
   );
 
   // Auto-calculated read time, overrides any stored value.
@@ -163,10 +170,6 @@ const Post = () => {
   }, [sanitizedContent]);
 
   // Combine structured FAQ (post.faq) with any FAQ detected inline in the body.
-  const detectedFaq = useMemo(
-    () => detectFaqFromHtml(sanitizedContent),
-    [sanitizedContent],
-  );
   const allFaq = useMemo(() => {
     const base = post?.faq?.length ? post.faq : [];
     const seen = new Set(base.map((f) => f.question.toLowerCase().trim()));
@@ -265,9 +268,9 @@ const Post = () => {
   };
   const [firstHalf, secondHalf] = splitContent(contentWithAnchors);
 
-  // Only show the standalone FAQ component if the structured array has entries
-  // — avoid duplicating an inline FAQ section already in the body.
-  const showStandaloneFaq = (post.faq?.length ?? 0) > 0 && detectedFaq.length === 0;
+  // Render the accordion FAQ whenever we have entries — either from the
+  // structured field or extracted from the body (already stripped above).
+  const showFaq = allFaq.length > 0;
 
   return (
     <SiteLayout>
@@ -365,7 +368,7 @@ const Post = () => {
               />
             )}
 
-            {showStandaloneFaq && <Faq items={post.faq} />}
+            {showFaq && <Faq items={allFaq} />}
 
             <NextStepCta />
           </article>
