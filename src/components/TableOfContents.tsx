@@ -12,10 +12,38 @@ const slugify = (raw: string) =>
     .replace(/\s+/g, "-")
     .slice(0, 80);
 
+// Heading texts that are internal subsections and should never appear in the
+// TOC for long-form list / comparison articles. Matched case-insensitively.
+const TOC_EXCLUDE_PATTERNS: RegExp[] = [
+  /^key\s+strengths?$/i,
+  /^pros$/i,
+  /^cons$/i,
+  /^pros\s*(&|and|\/)\s*cons$/i,
+  /^bottom\s+line$/i,
+  /^features?$/i,
+  /^pricing$/i,
+  /^verdict$/i,
+  /^summary$/i,
+  /^who\s+it'?s\s+for$/i,
+  /^use\s+cases?$/i,
+  /^limitations?$/i,
+];
+
+const shouldExclude = (text: string, el: Element): boolean => {
+  if (el.getAttribute("data-toc") === "exclude") return true;
+  if (el.classList.contains("toc-exclude")) return true;
+  if (el.getAttribute("data-toc") === "include") return false;
+  if (el.classList.contains("toc-include")) return false;
+  return TOC_EXCLUDE_PATTERNS.some((re) => re.test(text.trim()));
+};
+
 /**
  * Parses an HTML string and returns headings (h2/h3) with stable IDs.
  * Returns the rewritten HTML where each heading has an id attribute the
  * TOC links can target. Pure — safe to call during render.
+ *
+ * Boilerplate subsection headings (Pros, Cons, Bottom Line, …) get an id so
+ * inline anchors still work, but are filtered out of the rendered TOC.
  */
 export const buildToc = (html: string): { items: TocItem[]; html: string } => {
   if (typeof window === "undefined" || !html) return { items: [], html };
@@ -38,6 +66,7 @@ export const buildToc = (html: string): { items: TocItem[]; html: string } => {
     }
     used.add(id);
     node.setAttribute("id", id);
+    if (shouldExclude(text, node)) return;
     items.push({ id, text, level });
   });
   return { items, html: container.innerHTML };

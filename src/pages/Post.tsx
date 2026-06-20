@@ -62,16 +62,17 @@ const formatDate = (iso: string) =>
 
 /**
  * Detect a "Frequently Asked Questions" / "FAQ" H2 section in the article
- * HTML and pull out subsequent H3 (question) + following text (answer) pairs
- * until the next H2 or end of document.
+ * HTML, pull out subsequent H3 (question) + following text (answer) pairs
+ * until the next H2, AND return a cleaned HTML body with that section
+ * removed so we can render an accordion in its place.
  */
-const detectFaqFromHtml = (
+const extractFaqSection = (
   html: string,
-): { question: string; answer: string }[] => {
-  if (typeof window === "undefined" || !html) return [];
+): { faq: { question: string; answer: string }[]; cleanedHtml: string } => {
+  if (typeof window === "undefined" || !html) return { faq: [], cleanedHtml: html };
   const doc = new DOMParser().parseFromString(`<div>${html}</div>`, "text/html");
   const container = doc.body.firstElementChild;
-  if (!container) return [];
+  if (!container) return { faq: [], cleanedHtml: html };
   const nodes = Array.from(container.children);
   const startIdx = nodes.findIndex(
     (n) =>
@@ -80,22 +81,32 @@ const detectFaqFromHtml = (
         n.textContent?.trim() ?? "",
       ),
   );
-  if (startIdx === -1) return [];
-  const out: { question: string; answer: string }[] = [];
+  if (startIdx === -1) return { faq: [], cleanedHtml: html };
+  const faq: { question: string; answer: string }[] = [];
   let current: { question: string; answer: string } | null = null;
+  let endIdx = nodes.length;
   for (let i = startIdx + 1; i < nodes.length; i++) {
     const el = nodes[i];
-    if (el.tagName === "H2") break;
+    if (el.tagName === "H2") {
+      endIdx = i;
+      break;
+    }
     if (el.tagName === "H3") {
-      if (current && current.answer.trim()) out.push(current);
+      if (current && current.answer.trim()) faq.push(current);
       current = { question: el.textContent?.trim() ?? "", answer: "" };
     } else if (current) {
       const txt = el.textContent?.trim() ?? "";
       if (txt) current.answer += (current.answer ? "\n\n" : "") + txt;
     }
   }
-  if (current && current.answer.trim()) out.push(current);
-  return out.filter((f) => f.question && f.answer);
+  if (current && current.answer.trim()) faq.push(current);
+  const cleaned = faq.filter((f) => f.question && f.answer);
+  if (!cleaned.length) return { faq: [], cleanedHtml: html };
+  // Remove the FAQ heading and its contents from the rendered body.
+  for (let i = endIdx - 1; i >= startIdx; i--) {
+    nodes[i].remove();
+  }
+  return { faq: cleaned, cleanedHtml: container.innerHTML };
 };
 
 const Post = () => {
@@ -140,9 +151,16 @@ const Post = () => {
     });
   }, [post]);
 
-  const { items: tocItems, html: contentWithAnchors } = useMemo(
-    () => buildToc(sanitizedContent),
+  // Pull any inline FAQ out of the body first, so it doesn't pollute the TOC
+  // and so we can render it as an accordion in its place.
+  const { faq: detectedFaq, cleanedHtml } = useMemo(
+    () => extractFaqSection(sanitizedContent),
     [sanitizedContent],
+  );
+
+  const { items: tocItems, html: contentWithAnchors } = useMemo(
+    () => buildToc(cleanedHtml),
+    [cleanedHtml],
   );
 
   // Auto-calculated read time, overrides any stored value.
@@ -152,10 +170,6 @@ const Post = () => {
   }, [sanitizedContent]);
 
   // Combine structured FAQ (post.faq) with any FAQ detected inline in the body.
-  const detectedFaq = useMemo(
-    () => detectFaqFromHtml(sanitizedContent),
-    [sanitizedContent],
-  );
   const allFaq = useMemo(() => {
     const base = post?.faq?.length ? post.faq : [];
     const seen = new Set(base.map((f) => f.question.toLowerCase().trim()));
@@ -254,9 +268,9 @@ const Post = () => {
   };
   const [firstHalf, secondHalf] = splitContent(contentWithAnchors);
 
-  // Only show the standalone FAQ component if the structured array has entries
-  // — avoid duplicating an inline FAQ section already in the body.
-  const showStandaloneFaq = (post.faq?.length ?? 0) > 0 && detectedFaq.length === 0;
+  // Render the accordion FAQ whenever we have entries — either from the
+  // structured field or extracted from the body (already stripped above).
+  const showFaq = allFaq.length > 0;
 
   return (
     <SiteLayout>
@@ -354,7 +368,7 @@ const Post = () => {
               />
             )}
 
-            {showStandaloneFaq && <Faq items={post.faq} />}
+            {showFaq && <Faq items={allFaq} />}
 
             <NextStepCta />
           </article>
